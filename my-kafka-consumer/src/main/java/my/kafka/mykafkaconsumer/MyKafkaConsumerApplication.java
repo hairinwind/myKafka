@@ -34,7 +34,7 @@ public class MyKafkaConsumerApplication implements CommandLineRunner {
 		config.put("bootstrap.servers", BOOTSTRAP_SERVERS);
 		config.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		config.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-		config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+		// config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 		return config;
 	}
 
