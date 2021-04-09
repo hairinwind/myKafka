@@ -17,3 +17,14 @@ Verify if it redo the count, after restart...
 ## remote-state-store
 
 ## global-state-store
+
+
+## commands of kafkacat
+https://dev.to/de_maric/learn-how-to-use-kafkacat-the-most-versatile-kafka-cli-client-1kb4  
+
+## kafka command line
+```
+kg --describe --group testConsumer001
+```
+kg is the alias of "/home/yao/Downloads/kafka_2.11-2.0.1/bin/kafka-consumer-groups.sh --bootstrap-server 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092"
+

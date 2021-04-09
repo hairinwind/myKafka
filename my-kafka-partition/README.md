@@ -33,5 +33,10 @@ run the instance with argument "send", I can see one consumer instance consumer 
 now, I can see each instance is on one partition.  
 After run "send" message, I can see each consumer instance only take messages from one partition.
 
+## view the active consumers in one group
+```
+kg --describe --group testConsumer001
+```
+kg is the alias of "/home/yao/Downloads/kafka_2.11-2.0.1/bin/kafka-consumer-groups.sh --bootstrap-server 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092"
 
 
