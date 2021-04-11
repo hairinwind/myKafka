@@ -6,19 +6,21 @@ this is the project to send a message to topic "test001"
 this is the project to consume messages from topic "test001"
 
 ## my-kafka-partition
-test topic with multiple partitions, and the consumers in same group on different partition
+test topic with multiple partitions, and the consumers in same group are taking messages from different partition  
+kafka is doing the load balance on the consumers in same group
 
 ## my-kafka-consumer-local-state-store
-this is the project to do the word count on the messages.  
-The result is materialized to "word-count".  
-It supports to read the "word-count" result from the same stream which is doing the word count.  
-Verify if it redo the count, after restart...
+this is the project to do the bank transaction.   
+The result is sum all transactions as balance. 
+It supports to read the "balance" result from the same stream.  
+Verify if it redo the calculating, after delete the state folder and restart kafka cluster. (NO...)
 
 ## remote-state-store
 
 ## global-state-store
 
 
+# Appendix
 ## commands of kafkacat
 https://dev.to/de_maric/learn-how-to-use-kafkacat-the-most-versatile-kafka-cli-client-1kb4  
 
