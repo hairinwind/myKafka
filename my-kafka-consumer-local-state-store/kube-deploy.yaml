@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-kafka-consumer-local-state-store-01
+  name: my-kafka-consumer-local-state-store-01
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-kafka-consumer-local-state-store-01
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: my-kafka-consumer-local-state-store-01
+    spec:
+      containers:
+      - image: my-kafka-consumer-local-state-store:0.0.1-SNAPSHOT
+        name: my-kafka-consumer-local-state-store
+        resources: {}
+        volumeMounts:
+          - name: standard-storage
+            mountPath: /home/yao/myworkspace/kafka-data
+      volumes:
+        - name: standard-storage
+          persistentVolumeClaim:
+            claimName: my-persistent-volume-claim
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-kafka-consumer-local-state-store-01
+  name: my-kafka-consumer-local-state-store-01
+spec:
+  ports:
+  - name: 8080-8080
+    nodePort: 31880
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: my-kafka-consumer-local-state-store-01
+  type: NodePort
+status:
+  loadBalancer: {}
