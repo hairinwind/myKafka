@@ -36,21 +36,4 @@ public class MyKafkaRemoteStateController {
         return "record is sent to partition " + recordMetadata.partition();
     }
 
-    //
-    @GetMapping(value="/state/instances") //, produces = MediaType.APPLICATION_JSON
-    public List<HostStoreInfo> streamsMetadata() {
-        return consumer.streamsMetadata();
-    }
-
-    @GetMapping("/state/instances/{storeName}")
-    public List<HostStoreInfo> streamsMetadataForStore(@PathVariable final String storeName) {
-        return consumer.streamsMetadataForStore(storeName);
-    }
-
-    @GetMapping("/instance/{storeName}/{key}")
-    public HostStoreInfo streamsMetadataForStoreAndKey(@PathVariable final String storeName,
-                                                       @PathVariable final String key) {
-        return consumer.streamsMetadataForStoreAndKey(storeName, key, new StringSerializer());
-    }
-
 }

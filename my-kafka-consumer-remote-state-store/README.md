@@ -55,3 +55,20 @@ java.lang.RuntimeException: value is null
 **Only the instance connected to the right partition can get the balance.**
 
 ## try query remote state store
+Add the code to support RPC  
+Add APPLICATION_SERVER_CONFIG, this is returned when **streams.metadataForKey(store, key, serializer)** is called. 
+```
+String rpcEndpoint = host + ":" + serverPort;
+streamsConfiguration.put(StreamsConfig.APPLICATION_SERVER_CONFIG, rpcEndpoint);
+```
+Add this function to check which host contains the target state
+```
+streamsMetadataForStoreAndKey(...)
+```
+In the function to get balance, call streamsMetadataForStoreAndKey first to check which host contains the target state  
+if it is the current host that has the state, fetch the balance from the local state  
+otherwise, generate a rest call to fetch the remote state from http://<host>:port/account/<account_number>  
+The similar fetch example can be found here
+https://github.com/confluentinc/kafka-streams-examples/blob/59061b606fa0104e3b7ce4971b3a4cfde274f887/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java#L87  
+https://github.com/confluentinc/kafka-streams-examples/blob/59061b606fa0104e3b7ce4971b3a4cfde274f887/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java#L106
+

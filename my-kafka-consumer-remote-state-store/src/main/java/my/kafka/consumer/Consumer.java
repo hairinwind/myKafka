@@ -100,9 +100,7 @@ public class Consumer {
     }
 
     private Double fetchRemoteBalance(HostStoreInfo hostStoreInfo, String accountNumber) {
-        // TODO restTemplate
-        // target URL example is localhost:9003/account/100001
-        // kafka sample ulr is localhost:9003/state/
+        // target URL example is http://<host>:<port>/account/100001
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://" + hostStoreInfo.getHost()+":"+hostStoreInfo.getPort()+"/account/"+accountNumber;
         LOGGER.info("...fetch state from " + url);
@@ -145,29 +143,12 @@ public class Consumer {
     }
 
     // the functions below are to support RPC
-    public List<HostStoreInfo> streamsMetadata() {
-        final Collection<StreamsMetadata> metadata = streams.allMetadata();
-        return mapInstancesToHostStoreInfo(metadata);
-    }
-
-    private List<HostStoreInfo> mapInstancesToHostStoreInfo(final Collection<StreamsMetadata> metadatas) {
-        return metadatas.stream().map(metadata -> new HostStoreInfo(metadata.host(),
-                metadata.port(),
-                metadata.stateStoreNames()))
-                .collect(Collectors.toList());
-    }
-
-    public List<HostStoreInfo> streamsMetadataForStore(String store) {
-        // Get metadata for all of the instances of this Kafka Streams application hosting the store
-        final Collection<StreamsMetadata> metadata = streams.allMetadataForStore(store);
-        return mapInstancesToHostStoreInfo(metadata);
-    }
-
     public <K> HostStoreInfo streamsMetadataForStoreAndKey(final String store,
                                                            final K key,
                                                            final Serializer<K> serializer) {
         // Get metadata for the instances of this Kafka Streams application hosting the store and
         // potentially the value for key
+        // the return host and port is APPLICATION_SERVER_CONFIG set in config, when each stream is started
         final StreamsMetadata metadata = streams.metadataForKey(store, key, serializer);
         if (metadata == null) {
             throw new RuntimeException("value is null");
