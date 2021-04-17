@@ -27,8 +27,6 @@ public class KafkaService {
 
     public static final Logger LOG = LoggerFactory.getLogger(KafkaService.class);
 
-    private static final String INPUT_TOPIC = "TextLinesTopic";
-
     public static final String TOPIC = "bank-transactions";
     public static final String BALANCE = "balance";
     private KafkaStreams streams;
