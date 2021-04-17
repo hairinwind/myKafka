@@ -5,8 +5,9 @@ send a transaction message to topic
 key: target_account
 value: amount
 ```
-sum the amount (balance) and save to local state store
+To keep it simple, the key is the target_account and the message is the amount. In real world, the message shall be an object and contains both target_account and the amount. 
 
+sum the amount (balance) and save to local state store  
 read balance from local state store
 
 ## url to test
