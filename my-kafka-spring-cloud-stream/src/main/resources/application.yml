@@ -1,0 +1,15 @@
+server:
+  port: 9000
+
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092
+      bindings:
+        output: # this shall match the messageChannel name in java
+          destination: test001 # topic name
+        input: # this shall match the @StreamListener("input") in java
+          destination: test001 # topic name
+# more spring cloud stream config properties: https://cloud.spring.io/spring-cloud-static/spring-cloud-stream-binder-kafka/2.2.0.RC1/spring-cloud-stream-binder-kafka.html#_multiple_output_bindings_aka_branching
