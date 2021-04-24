@@ -1,6 +1,7 @@
 package my.kafka.spring.producer;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.DoubleSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.consumer.bootstrap-servers}")
     private String bootstrapAddress;
 
+    //https://howtodoinjava.com/kafka/multiple-consumers-example/
     //1. Send string to Kafka
     @Bean
     public ProducerFactory<String, String> producerFactory() {
@@ -50,4 +52,20 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, Double> bankKafkaTemplate() {
         return new KafkaTemplate<>(bankProducerFactory());
     }
+
+    //3 bytesKafkaTemplate
+    @Bean
+    public ProducerFactory<String, byte[]> bytesProducerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
+        return new DefaultKafkaProducerFactory<>(props);
+    }
+
+    @Bean
+    public KafkaTemplate<String, byte[]> bytesKafkaTemplate() {
+        return new KafkaTemplate<>(bytesProducerFactory());
+    }
+
 }

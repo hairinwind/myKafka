@@ -30,4 +30,8 @@ public class MyKafkaSpringApplication {
         this.producer.sendBankTx(account, amount);
     }
 
+    @PostMapping(value = "/sendWrong/{account}")
+    public void sendWrong(@PathVariable String account, @RequestParam("amount") String text) {
+        this.producer.sendMessageInWrongFormat(account, text);
+    }
 }
