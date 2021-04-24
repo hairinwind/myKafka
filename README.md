@@ -22,8 +22,6 @@ this is the project to get the state from remote state store.
 
 ## my-kafka-spring
 use spring-kafka (this is different with spring-cloud-stream)  
-https://www.baeldung.com/spring-kafka
-https://www.confluent.io/blog/apache-kafka-spring-boot-application/?utm_medium=sem&utm_source=google&utm_campaign=ch.sem_br.nonbrand_tp.prs_tgt.kafka_mt.mbm_rgn.namer_lng.eng_dv.all&utm_term=%2Bkafka%20%2Bspring&creative=&device=c&placement=&gclid=CjwKCAjwmv-DBhAMEiwA7xYrd6wTE1YQObTaXR2BaouC75PCuMmqiQn4S940zvIKXmo60mYeYGBz_hoC8BoQAvD_BwE  
 
 ## my-kafka-spring-cloud-stream
 this project is to use spring-cloud-stream + kafka.  

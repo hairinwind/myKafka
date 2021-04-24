@@ -4,6 +4,8 @@ spring-kafka is different with spring-cloud-stream. Don't mix them together.
 
 ## reference
 https://howtodoinjava.com/kafka/multiple-consumers-example/
+https://www.baeldung.com/spring-kafka  
+https://www.confluent.io/blog/apache-kafka-spring-boot-application/?utm_medium=sem&utm_source=google&utm_campaign=ch.sem_br.nonbrand_tp.prs_tgt.kafka_mt.mbm_rgn.namer_lng.eng_dv.all&utm_term=%2Bkafka%20%2Bspring&creative=&device=c&placement=&gclid=CjwKCAjwmv-DBhAMEiwA7xYrd6wTE1YQObTaXR2BaouC75PCuMmqiQn4S940zvIKXmo60mYeYGBz_hoC8BoQAvD_BwE  
 https://docs.spring.io/spring-kafka/reference/html/#reference
 
 ## use default 
@@ -79,4 +81,4 @@ Don't mix the deserialization exception with the business exception on same topi
 To test it, ```curl -X POST -F 'amount=a' localhost:9000/sendWrong/100003```
 It shall appear in the DLT topic  
 
-
+## TODO spring-kafka stream
