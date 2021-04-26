@@ -83,3 +83,4 @@ To test it, ```curl -X POST -F 'amount=a' localhost:9000/sendWrong/100003```
 It shall appear in the DLT topic  
 
 ## TODO spring-kafka stream
+https://docs.spring.io/spring-kafka/reference/html/#basics
