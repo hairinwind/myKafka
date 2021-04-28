@@ -1,8 +1,5 @@
-
 server:
   port: 9999
-
-
 
 spring:
   kafka:
@@ -16,6 +13,8 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+        application.server: ${server.host}:${server.port}
+        state.dir: /home/yao/myworkspace/kafka-data/alpha-bank/${instance.index}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

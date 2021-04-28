@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
@@ -36,6 +37,13 @@ public class MyKafkaBankApplication {
 	@GetMapping("/testSendFromExternal")
 	public String testSendFormExternal() {
 		BankTransaction bankTransaction = new BankTransaction("external", "100002", 1D);
+		producer.sendBankTransaction(bankTransaction);
+		return "SUCCESS";
+	}
+
+	@GetMapping("/send")
+	public String send(@RequestParam String fromAccount, @RequestParam String toAccount, @RequestParam Double amount) {
+		BankTransaction bankTransaction = new BankTransaction(fromAccount, toAccount, amount);
 		producer.sendBankTransaction(bankTransaction);
 		return "SUCCESS";
 	}

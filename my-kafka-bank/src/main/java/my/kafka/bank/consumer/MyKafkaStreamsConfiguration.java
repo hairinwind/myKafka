@@ -11,12 +11,9 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
-import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
 import java.util.LinkedList;
@@ -51,25 +48,31 @@ public class MyKafkaStreamsConfiguration {
         KGroupedStream<String, Double> groupedByAccount = stream
                 .map((k,v) -> KeyValue.pair(k, v.getAmount()))
                 .groupBy((account, amount) -> account, Grouped.with(Serdes.String(), Serdes.Double()));
-        groupedByAccount.reduce(Double::sum,
+        Reducer<Double> reduceFunction = (subtotal, amount) -> {
+            // detect when the reducer is triggered
+            System.out.println("...reducer is running to add subtotal with amount..." + amount);
+            return subtotal + amount;
+        };
+        //Double::sum
+        groupedByAccount.reduce(reduceFunction,
                 Materialized.<String, Double, KeyValueStore<Bytes, byte[]>>as(StateStore.BALANCE)
                         .withValueSerde(Serdes.Double()));
 
         return stream;
     }
 
-    @Bean
-    public ReadOnlyKeyValueStore<String, Double> balanceStateStore(StreamsBuilderFactoryBean defaultKafkaStreamsBuilder) {
-        if (defaultKafkaStreamsBuilder == null) {
-            System.out.println("... defaultKafkaStreamsBuilder is null ...");
-        }
-        if (defaultKafkaStreamsBuilder.getKafkaStreams() == null) {
-            System.out.println("... defaultKafkaStreamsBuilder.getKafkaStreams() is null ...");
-        }
-        ReadOnlyKeyValueStore<String, Double> store = defaultKafkaStreamsBuilder.getKafkaStreams().store(
-                StateStore.BALANCE,
-                QueryableStoreTypes.keyValueStore());
-        return store;
-    }
+//    @Bean
+//    public ReadOnlyKeyValueStore<String, Double> balanceStateStore(StreamsBuilderFactoryBean defaultKafkaStreamsBuilder) {
+//        if (defaultKafkaStreamsBuilder == null) {
+//            System.out.println("... defaultKafkaStreamsBuilder is null ...");
+//        }
+//        if (defaultKafkaStreamsBuilder.getKafkaStreams() == null) {
+//            System.out.println("... defaultKafkaStreamsBuilder.getKafkaStreams() is null ...");
+//        }
+//        ReadOnlyKeyValueStore<String, Double> store = defaultKafkaStreamsBuilder.getKafkaStreams().store(
+//                StateStore.BALANCE,
+//                QueryableStoreTypes.keyValueStore());
+//        return store;
+//    }
 
 }
