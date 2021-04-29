@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @SpringBootApplication
 @RestController
@@ -27,21 +26,21 @@ public class MyKafkaBankApplication {
 		SpringApplication.run(MyKafkaBankApplication.class, args);
 	}
 
-	@GetMapping("/testSend")
+	@PostMapping("/testSend")
 	public String testSend() {
 		BankTransaction bankTransaction = new BankTransaction("100001", "100002", 1D);
 		producer.sendBankTransaction(bankTransaction);
 		return "SUCCESS";
 	}
 
-	@GetMapping("/testSendFromExternal")
+	@PostMapping("/testSendFromExternal")
 	public String testSendFormExternal() {
 		BankTransaction bankTransaction = new BankTransaction("external", "100002", 1D);
 		producer.sendBankTransaction(bankTransaction);
 		return "SUCCESS";
 	}
 
-	@GetMapping("/send")
+	@PostMapping("/send")
 	public String send(@RequestParam String fromAccount, @RequestParam String toAccount, @RequestParam Double amount) {
 		BankTransaction bankTransaction = new BankTransaction(fromAccount, toAccount, amount);
 		producer.sendBankTransaction(bankTransaction);
@@ -51,5 +50,10 @@ public class MyKafkaBankApplication {
 	@GetMapping("/account/{accountNumber}")
 	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable String accountNumber) {
 		return ResponseEntity.ok(consumer.getBalance(accountNumber));
+	}
+
+	@GetMapping("/fetchAllLocalBalances")
+	public ResponseEntity<List<AccountBalance>> fetchAllLocalBalances() {
+		return ResponseEntity.ok(consumer.fetchAllLocalBalances());
 	}
 }

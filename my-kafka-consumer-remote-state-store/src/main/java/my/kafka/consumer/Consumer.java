@@ -18,14 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 @Service
 public class Consumer {
@@ -76,6 +73,7 @@ public class Consumer {
             }
         }));
 
+        // just to check MetaData
         Collection<StreamsMetadata> streamsMetadata = streams.allMetadata();
         System.out.println(streamsMetadata.size());
     }
@@ -151,7 +149,7 @@ public class Consumer {
         // the return host and port is APPLICATION_SERVER_CONFIG set in config, when each stream is started
         final StreamsMetadata metadata = streams.metadataForKey(store, key, serializer);
         if (metadata == null) {
-            throw new RuntimeException("value is null");
+            throw new RuntimeException("metadata is null");
         }
 
         return new HostStoreInfo(metadata.host(),

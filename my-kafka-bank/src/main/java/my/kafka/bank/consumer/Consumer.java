@@ -10,6 +10,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.apache.kafka.streams.state.StreamsMetadata;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class Consumer {
@@ -94,6 +97,15 @@ public class Consumer {
         return restTemplate.getForObject(url, AccountBalance.class);
     }
 
+    public List<AccountBalance> fetchAllLocalBalances() {
+        List<AccountBalance> result = new ArrayList<>();
+        KeyValueIterator<String, Double> all = balanceStateStore().all();
+        all.forEachRemaining(record -> {
+            result.add(new AccountBalance(record.key, record.value));
+        });
+        return result;
+    }
+
     protected ReadOnlyKeyValueStore<String, Double> balanceStateStore() {
         ReadOnlyKeyValueStore<String, Double> store = defaultKafkaStreamsBuilder.getKafkaStreams().store(
                 StateStore.BALANCE,
@@ -104,10 +116,17 @@ public class Consumer {
     @Autowired
     StreamsBuilder streamsBuilder;
 
+    @Value("${spring.kafka.streams.properties.application.server}")
+    private String applicationServer;
+    @Value("${spring.kafka.streams.properties.state.dir}")
+    private String stateDir;
+
     @PostConstruct
     public void postConstruct() {
         Topology topology = streamsBuilder.build();
         logger.info("topology: {}", topology.describe());
+        logger.info("applicationServer {}", applicationServer);
+        logger.info("stateDir {}", stateDir);
     }
 
 }
