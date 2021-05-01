@@ -1,9 +1,7 @@
 package my.kafka.bank.consumer;
 
 import my.kafka.bank.StateStore;
-import my.kafka.bank.Topic;
 import my.kafka.bank.message.AccountBalance;
-import my.kafka.bank.message.BankTransaction;
 import my.kafka.bank.message.BankTransactionInternal;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -18,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -44,15 +41,15 @@ public class Consumer {
     @Value("${server.host:localhost}")
     public String host;
 
-    @KafkaListener(topics = Topic.TRANSACTION_RAW)
-    public void consume(BankTransaction bankTransaction) {
-        logger.info("bankTransaction created -> {}", bankTransaction);
-    }
-
-    @KafkaListener(topics = Topic.TRANSACTION_INTERNAL)
-    public void consume(BankTransactionInternal txInternal) {
-        logger.info("txInternal created -> {}", txInternal);
-    }
+//    @KafkaListener(topics = Topic.TRANSACTION_RAW, groupId="monitor")
+//    public void consume(BankTransaction bankTransaction) {
+//        logger.info("bankTransaction created -> {}", bankTransaction);
+//    }
+//
+//    @KafkaListener(topics = Topic.TRANSACTION_INTERNAL, groupId="monitor")
+//    public void consume(BankTransactionInternal txInternal) {
+//        logger.info("txInternal created -> {}", txInternal);
+//    }
 
     public AccountBalance getBalance(String accountNumber) {
         final HostStoreInfo hostStoreInfo = streamsMetadataForStoreAndKey(StateStore.BALANCE, accountNumber, new StringSerializer());

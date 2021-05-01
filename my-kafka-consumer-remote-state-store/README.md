@@ -8,8 +8,8 @@
 --topic bank-transactions-3-partitions
 ```
 
-## create the producer and send some messages 
-create the producer my.kafka.producer.Producer  
+## create the my.kafka.bank.producer and send some messages 
+create the my.kafka.bank.producer my.kafka.my.kafka.bank.producer.Producer  
 send some messages:  
 curl -X POST localhost:8080/account/100001?amount=1  
 curl -X POST localhost:8080/account/100002?amount=2  

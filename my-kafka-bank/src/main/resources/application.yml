@@ -3,7 +3,7 @@
 
 spring:
   kafka:
-    bootstrap-servers: 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092 # common for consumer/producer/streams
+    bootstrap-servers: 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092 # common for consumer/my.kafka.bank.producer/streams
     streams:
       application-id: alpha-bank
       properties:

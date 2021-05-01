@@ -37,7 +37,7 @@ public class KafkaProducerConfig {
     }
 
     //2 Send String - Double to kafka
-    // if there is custom producer config, the default bean (code above) shall be explicitly declared.
+    // if there is custom my.kafka.bank.producer config, the default bean (code above) shall be explicitly declared.
     // not like the consumer config, the default one is always working.
     @Bean
     public ProducerFactory<String, Double> bankProducerFactory() {

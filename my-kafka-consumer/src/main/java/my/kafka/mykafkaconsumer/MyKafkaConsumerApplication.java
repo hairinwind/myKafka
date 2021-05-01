@@ -27,8 +27,8 @@ public class MyKafkaConsumerApplication implements CommandLineRunner {
 
 	public Properties kafkaConfig() throws UnknownHostException {
 		Properties config = new Properties();
-		//client.id is the logical name in kafka log
-		// config.put("client.id", InetAddress.getLocalHost().getHostName());
+		//my.kafka.bank.client.id is the logical name in kafka log
+		// config.put("my.kafka.bank.client.id", InetAddress.getLocalHost().getHostName());
 		//group.id is to load balance the consumers.
 		config.put("group.id", "testConsumer001");
 		config.put("bootstrap.servers", BOOTSTRAP_SERVERS);

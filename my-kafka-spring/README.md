@@ -18,11 +18,11 @@ spring:
     consumer:
       bootstrap-servers
       ...
-    producer:
+    my.kafka.bank.producer:
        ...
 ```
 my.kafka.spring.consumer.Consumer.consume(String message) is using the spring default containerFactory. The default container Factory is taking the configuration from application.yml.  
-my.kafka.spring.producer.Producer.sendMessage(String message) is using the spring default kafkaTemplate. The default kafkaTemplate is taking the configuration from application.yml.  
+my.kafka.spring.my.kafka.bank.producer.Producer.sendMessage(String message) is using the spring default kafkaTemplate. The default kafkaTemplate is taking the configuration from application.yml.  
 
 ## use custom factory
 For real application, you need visit multiple topics. It probably needs different config props, like different Serializer and Deserializer.  
@@ -39,10 +39,10 @@ Then on the listener, specify the containerFactory
     }
 ```
 
-### producer
+### my.kafka.bank.producer
 Two beans is needed:
-my.kafka.spring.producer.KafkaProducerConfig.producerFactory(), which specify serializer.  
-my.kafka.spring.producer.KafkaProducerConfig.kafkaTemplate()  
+my.kafka.spring.my.kafka.bank.producer.KafkaProducerConfig.producerFactory(), which specify serializer.  
+my.kafka.spring.my.kafka.bank.producer.KafkaProducerConfig.kafkaTemplate()  
 I found once I create a custom kafkaTemplate, the default one from Spring is not working anymore. If I want to use it, I have create the bean in code. 
 
 ## dead letter topic

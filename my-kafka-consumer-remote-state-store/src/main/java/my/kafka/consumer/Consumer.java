@@ -122,7 +122,7 @@ public class Consumer {
     private Properties config() {
         Properties streamsConfiguration = new Properties();
         streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "transaction-balance-3-partitions");
-        streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, "transaction-balance-client-3-partitions");
+        streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, "transaction-balance-my.kafka.bank.client-3-partitions");
         streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, Constants.BOOTSTRAP_SERVERS);
         streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Double().getClass().getName());

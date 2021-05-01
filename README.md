@@ -1,5 +1,5 @@
 
-## my-kafka-producer
+## my-kafka-my.kafka.bank.producer
 this is the project to send a message to topic "test001"
 
 ## my-kafka-consumer
@@ -25,10 +25,21 @@ use spring-kafka (this is different with spring-cloud-stream)
 
 ## my-kafka-spring-cloud-stream
 this project is to use spring-cloud-stream + kafka.  
-It is a simple project, one producer and one consumer.  
+It is a simple project, one my.kafka.bank.producer and one consumer.  
 reference doc:
 - https://cloud.spring.io/spring-cloud-static/spring-cloud-stream-binder-kafka/2.2.0.RC1/spring-cloud-stream-binder-kafka.html#_apache_kafka_binder  
-- https://github.com/spring-cloud/spring-cloud-stream-samples  
+- https://github.com/spring-cloud/spring-cloud-stream-samples
+
+## my-kafka-bank, my-kafka-bank-monitor and my-kafka-bank-receiver
+- receive transactions: fromAccount / toAccount / amount / time / tx_uuid
+- flatTransform 1 transactions into 2 transactions, one on fromAccount and the other one is on toAccount, and executeInTransaction
+- stream to calculate balance 
+- add 1000 accounts, with initial deposit tx
+- for each account, create transactions to other account. Test the performance
+  
+## exception handling
+- ** set up the limit, for example, if the debit amount > account balance, the transaction is not allowed. It shall be sent to another topic and let it retry later. **
+- for one tx, the credit on "to account" shall happen after debit on "from account". Test performance...
 
 ## Kafka Processor API
 Kafka processor API is low level API.  
@@ -38,19 +49,9 @@ http://mkuthan.github.io/blog/2017/11/02/kafka-streams-dsl-vs-processor-api/
 https://medium.com/@ceyhunuzngl/kafka-stream-processor-api-in-spring-boot-4e251067a58f#_=_  
 TODO...
 
-## my-kafka-bank
-- receive transactions: fromAccount / toAccount / amount / time / tx_uuid
-- flatTransform 1 transactions into 2 transactions, one on fromAccount and the other one is on toAccount, and executeInTransaction
-- stream to calculate balance 
-- add 1000 accounts, with initial deposit tx
-- for each account, create transactions to other account. Test the performance
-- ** set up the limit, for example, if the debit amount > account balance, the transaction is not allowed. It shall be sent to another topic and let it retry later. **
-- for one tx, the credit on "to account" shall happen after debit on "from account". Test performance...
-
-
 # Appendix
 ## commands of kafkacat
-https://dev.to/de_maric/learn-how-to-use-kafkacat-the-most-versatile-kafka-cli-client-1kb4  
+https://dev.to/de_maric/learn-how-to-use-kafkacat-the-most-versatile-kafka-cli-my.kafka.bank.client-1kb4  
 
 ## kafka command line
 ```
@@ -58,3 +59,10 @@ kg --describe --group testConsumer001
 ```
 kg is the alias of "/home/yao/Downloads/kafka_2.11-2.0.1/bin/kafka-consumer-groups.sh --bootstrap-server 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092"
 
+check the offset
+```
+bin/kafka-consumer-groups.sh --bootstrap-server 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092 --group monitor --describe
+```
+
+reset intermediate/auto-created topics
+``` bin/kafka-streams-application-reset.sh --application-id alpha-bank --bootstrap-servers 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092```

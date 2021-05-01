@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>my.kafka</groupId>
-	<artifactId>my-kafka-producer</artifactId>
+	<artifactId>my-kafka-my.kafka.bank.producer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>my-kafka-producer</name>
+	<name>my-kafka-my.kafka.bank.producer</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
