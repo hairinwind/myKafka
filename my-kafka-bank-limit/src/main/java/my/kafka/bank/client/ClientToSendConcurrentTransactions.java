@@ -16,7 +16,7 @@ public class ClientToSendConcurrentTransactions {
 
     public static final Logger logger = LoggerFactory.getLogger(ClientToSendConcurrentTransactions.class);
 
-    private static final int testAccountNumber = 1000;
+    private static final int testAccountNumber = 10;
 
     public static void main(String[] args) throws InterruptedException {
         ClientToResetBalance.resetAllBalances(0D);

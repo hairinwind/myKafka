@@ -24,19 +24,18 @@ public class ClientToInitialAccount {
         List<Callable<String>> callableList = new ArrayList<>();
 
 //        List<String> hosts = Arrays.asList(host1, host2, host3);
-        Double amount = 1000D;
-        for (int i = 0; i < 1000; i++) {
-            String host = AlphaBankRestClient.producerHost1;
+        Double amount = 0D;
+        for (int i = 0; i < 10; i++) {
             String account = String.valueOf(100001 + i);
-            Callable<String> callableTask = generateCallableTask(host, account, amount);
+            Callable<String> callableTask = generateCallableTask(account, amount);
             callableList.add(callableTask);
         }
         return callableList;
     }
 
-    private static Callable<String> generateCallableTask(String host, String account, Double amount) {
+    private static Callable<String> generateCallableTask(String account, Double amount) {
         return () -> {
-            return AlphaBankRestClient.moveMoney("external", account, amount, host);
+            return AlphaBankRestClient.moveMoney("external", account, amount);
         };
     }
 

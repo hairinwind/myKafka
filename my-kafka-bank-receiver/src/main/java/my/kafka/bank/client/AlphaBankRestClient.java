@@ -21,6 +21,7 @@ public class AlphaBankRestClient {
     public static final String producerHost1 = "http://localhost:9999";
     public static final String producerHost2 = "http://localhost:9998";
     public static final String producerHost3 = "http://localhost:9997";
+    public static final boolean multipleProducerEnabled = false;
 
     // stream hosts
     private static final String host1 = "http://localhost:9001";
@@ -40,8 +41,8 @@ public class AlphaBankRestClient {
         return restTemplate.postForObject(host + "/send", request, String.class);
     }
 
-    public static void moveMoney(String fromAccount, String toAccount, Double amount) {
-        moveMoney(fromAccount, toAccount, amount, producerHost1);
+    public static String moveMoney(String fromAccount, String toAccount, Double amount) {
+        return moveMoney(fromAccount, toAccount, amount, producerHost1);
     }
 
     public static List<AccountBalance> allAccountBalances() {

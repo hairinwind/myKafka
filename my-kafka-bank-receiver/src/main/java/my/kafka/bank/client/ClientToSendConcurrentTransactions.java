@@ -63,20 +63,28 @@ public class ClientToSendConcurrentTransactions {
     private static List<Callable<String>> generateCallableTasks() {
         List<Callable<String>> callableList = new ArrayList<>();
 
-        List<String> hosts = Arrays.asList(producerHost1, producerHost2, producerHost3);
         Double amount = 1D;
         for (int i = 0; i < testAccountNumber; i++) {
             String fromAccount = String.valueOf(100001 + i);
             // move $1 to any account after current account
             // every account balance is starting from $1000
             for (int j = i + 1; j < testAccountNumber; j++) {
-                String host = hosts.get( j % 3);
+                String host = getHost(j);
                 String toAccount = String.valueOf(100001 + j);
                 Callable<String> callableTask = generateCallableTask(host, fromAccount, toAccount, amount);
                 callableList.add(callableTask);
             }
         }
         return callableList;
+    }
+
+    private static String getHost(int j) {
+        if (multipleProducerEnabled) {
+            List<String> hosts = Arrays.asList(producerHost1, producerHost2, producerHost3);
+            return hosts.get(j % 3);
+        } else {
+            return producerHost1;
+        }
     }
 
     private static Callable<String> generateCallableTask(String host, String fromAccount, String toAccount, Double amount) {

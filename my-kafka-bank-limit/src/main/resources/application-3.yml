@@ -1,0 +1,5 @@
+instance.index: 3
+
+server:
+  host: localhost
+  port: 9003
