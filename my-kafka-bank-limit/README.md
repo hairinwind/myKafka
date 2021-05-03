@@ -8,4 +8,7 @@
 ```
 
 ## projects
-when the balance is less than the debit amount, the tx is pushed to alpha-bank-transactions-raw-retry and retry later. 
+when the balance is less than the debit amount, the tx is not allowed. It will retry a couple of times and only be fulfilled when there is enough balance. 
+
+## reference
+https://github.com/spring-projects/spring-kafka/blob/main/spring-kafka-docs/src/main/asciidoc/retrytopic.adoc

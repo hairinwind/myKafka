@@ -6,6 +6,7 @@ import my.kafka.bank.Topic;
 import my.kafka.bank.message.AccountBalance;
 import my.kafka.bank.message.BankTransaction;
 import my.kafka.bank.message.BankTransactionInternal;
+import my.kafka.bank.producer.Producer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -14,14 +15,25 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonSerde;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +47,36 @@ public class MyKafkaStreamsConfiguration {
     @Autowired
     private Consumer consumer;
 
+    @Autowired
+    private Producer producer;
+
+    @DltHandler
+    public void processMessage(BankTransaction bankTransaction) {
+        logger.error("cannot process {}", bankTransaction);
+    }
+
+//    @Bean
+//    public ConsumerFactory<String, Double> bankConsumerFactory() {
+//        Map<String, Object> props = new HashMap<>();
+//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+//        return new DefaultKafkaConsumerFactory<>(props,
+//                new StringDeserializer(),
+//                new DoubleDeserializer());
+//    }
+
+    // the containerFactory when business exception is thrown out from consumer@Bean
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory bankKafkaListenerContainerFactory(
+            KafkaTemplate<String, Object> bankKafkaTemplate,
+            ConsumerFactory<String, Object> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, Double> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(
+                new DeadLetterPublishingRecoverer(bankKafkaTemplate), new FixedBackOff(0, 2L)));
+        return factory;
+    }
+
+    @RetryableTopic
     @Bean
     public KStream<String, BankTransaction> alphaBankKStream(StreamsBuilder streamsBuilder) {
         JsonSerde<BankTransaction> valueSerde = new JsonSerde<>(BankTransaction.class);
@@ -58,7 +100,7 @@ public class MyKafkaStreamsConfiguration {
                 .reduce(Double::sum,
                         Materialized.<String, Double, KeyValueStore<Bytes, byte[]>>as(StateStore.BALANCE).withValueSerde(Serdes.Double()));
 
-//        branches[1].to(Topic.TRANSACTION_RAW_RETRY, Produced.with(Serdes.String(), new JsonSerde<>()));
+        branches[1].to(Topic.TRANSACTION_RAW_RETRY, Produced.with(Serdes.String(), new JsonSerde<>()));
         return stream;
     }
 
@@ -72,6 +114,9 @@ public class MyKafkaStreamsConfiguration {
         }
         if (balance.getBalance().doubleValue() >= bankTransaction.getAmount().doubleValue()) {
             logger.info("balance is enough for {}", bankTransaction);
+        } else {
+            logger.error("balance is {} and is not enough {}", balance, bankTransaction);
+//            throw new BalanceNotEnoughException(balance, bankTransaction);
         }
         return balance.getBalance().doubleValue() >= bankTransaction.getAmount().doubleValue();
     }
@@ -98,4 +143,19 @@ public class MyKafkaStreamsConfiguration {
 //        return stream;
 //    }
 
+
+
+    //KafkaListener for retry
+    @RetryableTopic(attempts = "10",
+            backoff = @Backoff(delay = 1000, multiplier = 2, maxDelay = 5000))
+    @KafkaListener(topics = Topic.TRANSACTION_RAW_RETRY)
+    public void consume(BankTransaction bankTransaction) {
+        if (isBalanceEnough(bankTransaction)) {
+            producer.sendBankTransaction(bankTransaction);
+        } else {
+            logger.warn("balance not enough, retry...{}", bankTransaction);
+            throw new BalanceNotEnoughException(bankTransaction);
+        }
+    }
+    // ====================
 }

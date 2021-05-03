@@ -30,6 +30,16 @@ public class Consumer {
         transactionInternalCount.addAndGet(1);
     }
 
+    @KafkaListener(topics = Topic.TRANSACTION_RAW_RETRY, groupId="monitor")
+    public void consumeBankTransactionRetry(BankTransaction bankTransaction) {
+        logger.info("bank transaction retry message -> {}", bankTransaction);
+    }
+
+    @KafkaListener(topics = Topic.TRANSACTION_RAW_RETRY_DLT, groupId="monitor")
+    public void consumeBankTransactionRetryDLT(BankTransaction bankTransaction) {
+        logger.info("bank transaction dead letter -> {}", bankTransaction);
+    }
+
     public int getTransactionRawCount() {
         return transactionRawCount.get();
     }

@@ -36,16 +36,6 @@ public class Consumer {
     @Value("${server.host:localhost}")
     public String host;
 
-//    @KafkaListener(topics = Topic.TRANSACTION_RAW, groupId="monitor")
-//    public void consume(BankTransaction bankTransaction) {
-//        logger.info("bankTransaction created -> {}", bankTransaction);
-//    }
-//
-//    @KafkaListener(topics = Topic.TRANSACTION_INTERNAL, groupId="monitor")
-//    public void consume(BankTransactionInternal txInternal) {
-//        logger.info("txInternal created -> {}", txInternal);
-//    }
-
     public AccountBalance getBalance(String accountNumber) {
         final HostStoreInfo hostStoreInfo = streamsMetadataForStoreAndKey(StateStore.BALANCE, accountNumber, new StringSerializer());
         logger.info("... the state is on this server: " + hostStoreInfo);
