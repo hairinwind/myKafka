@@ -36,10 +36,11 @@ reference doc:
 - stream to calculate balance 
 - add 1000 accounts, with initial deposit tx
 - for each account, create transactions to other account. Test the performance
+my-kafka-bank-client contains the test client. 
   
-## limitation on stream
-- ** set up the limit, for example, if the debit amount > account balance, the transaction is not allowed. It shall be sent to another topic and let it retry later. **
-- for one tx, the credit on "to account" shall happen after debit on "from account". Test performance...
+## my-kafka-bank-limit
+- set up the limit, for example, if the debit amount > account balance, the transaction is not allowed. It shall be sent to another topic and let it retry later.
+
 
 ## exception handling
 

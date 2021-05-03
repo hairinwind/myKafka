@@ -1,6 +1,5 @@
 package my.kafka.bank.client;
 
-import my.kafka.bank.message.AccountBalance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
@@ -14,18 +13,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static my.kafka.bank.client.AlphaBankRestClient.*;
+import static my.kafka.bank.client.AlphaBankRestClient.multipleProducerEnabled;
+import static my.kafka.bank.client.AlphaBankRestClient.producerHost1;
+import static my.kafka.bank.client.AlphaBankRestClient.producerHost2;
+import static my.kafka.bank.client.AlphaBankRestClient.producerHost3;
 
-public class ClientToSendConcurrentTransactions {
+public class ClientToTestLimit {
 
-    public static final Logger logger = LoggerFactory.getLogger(ClientToSendConcurrentTransactions.class);
+    public static final Logger logger = LoggerFactory.getLogger(ClientToTestLimit.class);
 
-    private static final int testAccountNumber = 1000;
+    private static final int testAccountNumber = 10;
 
     public static void main(String[] args) throws InterruptedException {
-//        ClientToResetBalance.resetAllBalances(0D);
+        ClientToResetBalance.resetAllBalances(0D);
+        //initial 100010 balance to $10
+        AlphaBankRestClient.moveMoney("external", "100010", 10D);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        ExecutorService executorService = Executors.newFixedThreadPool(1); // make it sequential, so only the last tx has enough balance
 
         List<Callable<String>> callableTasks = generateCallableTasks();
 
@@ -40,39 +44,29 @@ public class ClientToSendConcurrentTransactions {
         //manually run "ClientToVerifyBalance" to verify the balance
     }
 
-    private static void verify() {
-        //verify
-        List<AccountBalance> accountBalances = allAccountBalances();
-        logger.info("total account number {}", accountBalances.size());
-
-        accountBalances.stream()
-                .filter(accountBalance -> Integer.parseInt(accountBalance.getAccount())  <= 100000 + testAccountNumber)
-                .filter(accountBalance -> {
-                    int accountIndex = Integer.valueOf(accountBalance.getAccount()) - 100000;
-                    double credit = accountIndex - 1;
-                    double debit = testAccountNumber - accountIndex;
-                    double expectedBalance = credit - debit;
-                    return !accountBalance.getBalance().equals(expectedBalance);
-                })
-                .forEach(accountBalance -> logger.info("accountBalance is not expected, {}", accountBalance));
-
-        logger.info("verification is done");
-    }
-
     private static List<Callable<String>> generateCallableTasks() {
         List<Callable<String>> callableList = new ArrayList<>();
 
-        Double amount = 1D;
+        /**
+         * start balance are all 0 except 100010 balance is $11
+         * 100001 -> 100002 $9
+         * 100002 -> 100003 $8
+         * 100003 -> 100004 $7
+         * ...
+         * 100009 -> 100010 $1
+         * 100010 -> 100001 $10
+         */
         for (int i = 0; i < testAccountNumber; i++) {
+            String host = getHost(i);
             String fromAccount = String.valueOf(100001 + i);
-            // move $1 to any account after current account
-            // every account balance is starting from $1000
-            for (int j = i + 1; j < testAccountNumber; j++) {
-                String host = getHost(j);
-                String toAccount = String.valueOf(100001 + j);
-                Callable<String> callableTask = generateCallableTask(host, fromAccount, toAccount, amount);
-                callableList.add(callableTask);
+            String toAccount = String.valueOf(100001 + i + 1);
+            Double amount = (double)(testAccountNumber - i - 1);
+            if (i+1 == testAccountNumber) {
+                toAccount = "100001";
+                amount = 10D;
             }
+            Callable<String> callableTask = generateCallableTask(host, fromAccount, toAccount, amount);
+            callableList.add(callableTask);
         }
         return callableList;
     }
