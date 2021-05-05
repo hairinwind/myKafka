@@ -61,18 +61,4 @@ public class MyKafkaStreamsConfiguration {
         return stream;
     }
 
-//    @Bean
-//    public ReadOnlyKeyValueStore<String, Double> balanceStateStore(StreamsBuilderFactoryBean defaultKafkaStreamsBuilder) {
-//        if (defaultKafkaStreamsBuilder == null) {
-//            System.out.println("... defaultKafkaStreamsBuilder is null ...");
-//        }
-//        if (defaultKafkaStreamsBuilder.getKafkaStreams() == null) {
-//            System.out.println("... defaultKafkaStreamsBuilder.getKafkaStreams() is null ...");
-//        }
-//        ReadOnlyKeyValueStore<String, Double> store = defaultKafkaStreamsBuilder.getKafkaStreams().store(
-//                StateStore.BALANCE,
-//                QueryableStoreTypes.keyValueStore());
-//        return store;
-//    }
-
 }
