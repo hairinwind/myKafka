@@ -38,24 +38,12 @@ public class MyKafkaStreamsConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(MyKafkaStreamsConfiguration.class);
 
     @Autowired
-    private Consumer consumer;
-
-    @Autowired
     private Producer producer;
 
     @DltHandler
     public void processMessage(BankTransaction bankTransaction) {
         logger.error("cannot process {}", bankTransaction);
     }
-
-//    @Bean
-//    public ConsumerFactory<String, Double> bankConsumerFactory() {
-//        Map<String, Object> props = new HashMap<>();
-//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-//        return new DefaultKafkaConsumerFactory<>(props,
-//                new StringDeserializer(),
-//                new DoubleDeserializer());
-//    }
 
     // the containerFactory when business exception is thrown out from consumer@Bean
 //    @Bean
@@ -65,6 +53,7 @@ public class MyKafkaStreamsConfiguration {
 //        ConcurrentKafkaListenerContainerFactory<String, Double> factory = new ConcurrentKafkaListenerContainerFactory<>();
 //        factory.setConsumerFactory(consumerFactory);
 //        factory.setErrorHandler(new SeekToCurrentErrorHandler(
+                /* DeadLetterPublishingRecoverer is not needed as @RetryableTopic has same effect */
 //                new DeadLetterPublishingRecoverer(bankKafkaTemplate), new FixedBackOff(0, 2L)));
 //        return factory;
 //    }

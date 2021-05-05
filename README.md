@@ -40,7 +40,10 @@ my-kafka-bank-client contains the test client.
   
 ## my-kafka-bank-limit
 - set up the limit, for example, if the debit amount > account balance, the transaction is not allowed. It shall be sent to another topic and let it retry later.
-
+this solution is not perfect
+  
+## my-kafka-bank-limit-advanced-1
+this solution works. 
 
 ## exception handling
 

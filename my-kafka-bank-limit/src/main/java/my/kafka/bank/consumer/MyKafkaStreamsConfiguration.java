@@ -26,14 +26,8 @@ import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
-import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.retry.annotation.Backoff;
-import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -55,27 +49,6 @@ public class MyKafkaStreamsConfiguration {
         logger.error("cannot process {}", bankTransaction);
     }
 
-//    @Bean
-//    public ConsumerFactory<String, Double> bankConsumerFactory() {
-//        Map<String, Object> props = new HashMap<>();
-//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-//        return new DefaultKafkaConsumerFactory<>(props,
-//                new StringDeserializer(),
-//                new DoubleDeserializer());
-//    }
-
-    // the containerFactory when business exception is thrown out from consumer@Bean
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory bankKafkaListenerContainerFactory(
-            KafkaTemplate<String, Object> bankKafkaTemplate,
-            ConsumerFactory<String, Object> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, Double> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory);
-        factory.setErrorHandler(new SeekToCurrentErrorHandler(
-                new DeadLetterPublishingRecoverer(bankKafkaTemplate), new FixedBackOff(0, 2L)));
-        return factory;
-    }
-
     @Bean
     public KStream<String, BankTransaction> alphaBankKStream(StreamsBuilder streamsBuilder) {
         JsonSerde<BankTransaction> valueSerde = new JsonSerde<>(BankTransaction.class);
@@ -85,6 +58,8 @@ public class MyKafkaStreamsConfiguration {
         /**
          * This does not work when high concurrency
          * the state store balance has some delay
+         *
+         * As the balance could be on remote, it shall be avoided.
          */
         KStream<String, BankTransaction>[] branches = stream.branch(
                 (key, value) -> isBalanceEnough(value),
@@ -123,30 +98,6 @@ public class MyKafkaStreamsConfiguration {
         }
         return balance.getBalance().doubleValue() >= bankTransaction.getAmount().doubleValue();
     }
-
-//    @Bean
-//    public KStream<String, BankTransactionInternal> alphaBankInternalKStream(StreamsBuilder streamsBuilder) {
-//        JsonSerde<BankTransactionInternal> valueSerde = new JsonSerde<>(BankTransactionInternal.class);
-//        KStream<String, BankTransactionInternal> stream = streamsBuilder.stream(Topic.TRANSACTION_INTERNAL,
-//                Consumed.with(Serdes.String(), valueSerde));
-//
-//        KGroupedStream<String, Double> groupedByAccount = stream
-//                .map((k,v) -> KeyValue.pair(k, v.getAmount()))
-//                .groupBy((account, amount) -> account, Grouped.with(Serdes.String(), Serdes.Double()));
-//        Reducer<Double> reduceFunction = (subtotal, amount) -> {
-//            // detect when the reducer is triggered
-//            System.out.println("...reducer is running to add subtotal with amount..." + amount);
-//            return subtotal + amount;
-//        };
-//        //Double::sum
-//        groupedByAccount.reduce(reduceFunction,
-//                Materialized.<String, Double, KeyValueStore<Bytes, byte[]>>as(StateStore.BALANCE)
-//                        .withValueSerde(Serdes.Double()));
-//
-//        return stream;
-//    }
-
-
 
     //KafkaListener for retry
     @RetryableTopic(attempts = "10",

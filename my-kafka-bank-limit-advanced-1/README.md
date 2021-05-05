@@ -21,6 +21,13 @@ When the stream on alpha-bank-transactions-raw find the tx status is "DEBIT_SUCC
 --partitions 3 \
 --topic alpha-bank-transactions-raw-completed
 ```
+```
+<kafka_dir>/bin/kafka-topics.sh --zookeeper 192.168.49.2:32181 \
+--create \
+--replication-factor 2 \
+--partitions 3 \
+--topic alpha-bank-transactions-raw-retry
+```
 
 ## Run ClientToTestLimitConcurrent
 check the detail on class in my-kafka-bank-client

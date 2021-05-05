@@ -31,20 +31,6 @@ MyKafkaBankLimitAdvancedApplication {
 		SpringApplication.run(MyKafkaBankLimitAdvancedApplication.class, args);
 	}
 
-//	@PostMapping("/testSend")
-//	public String testSend() {
-//		BankTransaction bankTransaction = new BankTransaction("100001", "100002", 1D);
-//		my.kafka.bank.producer.sendBankTransaction(bankTransaction);
-//		return "SUCCESS";
-//	}
-//
-//	@PostMapping("/testSendFromExternal")
-//	public String testSendFormExternal() {
-//		BankTransaction bankTransaction = new BankTransaction("external", "100002", 1D);
-//		my.kafka.bank.producer.sendBankTransaction(bankTransaction);
-//		return "SUCCESS";
-//	}
-
 	@PostMapping("/send")
 	public String send(@RequestParam String fromAccount, @RequestParam String toAccount, @RequestParam Double amount) {
 		BankTransaction bankTransaction = new BankTransaction(fromAccount, toAccount, amount);
