@@ -9,8 +9,8 @@ public class BankTransaction {
     private String fromAccount;
     private String toAccount;
     private Double amount;
-
     private Instant instant = Instant.now();
+    private BankTransactionStatus status = BankTransactionStatus.CREATED;
 
     public BankTransaction() {
     }
@@ -53,6 +53,14 @@ public class BankTransaction {
         return instant;
     }
 
+    public BankTransactionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BankTransactionStatus status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "BankTransaction{" +
@@ -61,6 +69,7 @@ public class BankTransaction {
                 ", toAccount='" + toAccount + '\'' +
                 ", amount=" + amount +
                 ", instant=" + instant +
+                ", status=" + status +
                 '}';
     }
 }

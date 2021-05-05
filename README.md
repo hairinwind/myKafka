@@ -71,7 +71,9 @@ bin/kafka-consumer-groups.sh --bootstrap-server 192.168.49.2:31090,192.168.49.2:
 ```
 
 reset intermediate/auto-created topics
-``` bin/kafka-streams-application-reset.sh --application-id alpha-bank --bootstrap-servers 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092```
+``` 
+bin/kafka-streams-application-reset.sh --application-id alpha-bank --bootstrap-servers 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092
+```
 
 ## reference
 https://www.confluent.io/blog/kafka-streams-tables-part-3-event-processing-fundamentals/  

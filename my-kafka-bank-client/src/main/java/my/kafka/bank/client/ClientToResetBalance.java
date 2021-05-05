@@ -14,7 +14,7 @@ public class ClientToResetBalance {
 //    public static final
 
     public static void main(String[] args) {
-        Double targetBalance = 0D;
+        Double targetBalance = 1000D;
         resetAllBalances(targetBalance);
         logger.info("done!");
     }
@@ -25,6 +25,11 @@ public class ClientToResetBalance {
                 .filter(accountBalance -> !accountBalance.getBalance().equals(targetBalance))
                 .forEach(accountBalance -> resetBalance(accountBalance, targetBalance));
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         accountBalances = allAccountBalances();
         accountBalances.stream()
                 .forEach(accountBalance -> logger.info("accountBalance is {}", accountBalance));

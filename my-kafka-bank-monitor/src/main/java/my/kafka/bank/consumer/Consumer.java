@@ -35,6 +35,11 @@ public class Consumer {
         logger.info("bank transaction retry message -> {}", bankTransaction);
     }
 
+    @KafkaListener(topics = Topic.TRANSACTION_RAW_COMPLETED, groupId="monitor")
+    public void consumeBankTransactionCompleted(BankTransaction bankTransaction) {
+        logger.info("bank transaction completed -> {}", bankTransaction);
+    }
+
     @KafkaListener(topics = Topic.TRANSACTION_RAW_RETRY_DLT, groupId="monitor")
     public void consumeBankTransactionRetryDLT(BankTransaction bankTransaction) {
         logger.info("bank transaction dead letter -> {}", bankTransaction);

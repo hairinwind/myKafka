@@ -48,8 +48,12 @@ public class AlphaBankRestClient {
 
     public static List<AccountBalance> allAccountBalances() {
         List<AccountBalance> accountBalances = fetchAllAccountBalances(host1);
-        accountBalances.addAll(fetchAllAccountBalances(host2));
-        accountBalances.addAll(fetchAllAccountBalances(host3));
+        try {
+            accountBalances.addAll(fetchAllAccountBalances(host2));
+            accountBalances.addAll(fetchAllAccountBalances(host3));
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
         return accountBalances;
     }
 

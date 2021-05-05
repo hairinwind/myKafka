@@ -76,13 +76,16 @@ public class MyKafkaStreamsConfiguration {
         return factory;
     }
 
-    @RetryableTopic
     @Bean
     public KStream<String, BankTransaction> alphaBankKStream(StreamsBuilder streamsBuilder) {
         JsonSerde<BankTransaction> valueSerde = new JsonSerde<>(BankTransaction.class);
         KStream<String, BankTransaction> stream = streamsBuilder.stream(Topic.TRANSACTION_RAW,
                 Consumed.with(Serdes.String(), valueSerde));
 
+        /**
+         * This does not work when high concurrency
+         * the state store balance has some delay
+         */
         KStream<String, BankTransaction>[] branches = stream.branch(
                 (key, value) -> isBalanceEnough(value),
                 (key, value) -> true                 /* all other records  */

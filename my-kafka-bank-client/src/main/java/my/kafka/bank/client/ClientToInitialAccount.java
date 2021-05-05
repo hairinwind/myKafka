@@ -24,8 +24,8 @@ public class ClientToInitialAccount {
         List<Callable<String>> callableList = new ArrayList<>();
 
 //        List<String> hosts = Arrays.asList(host1, host2, host3);
-        Double amount = 0D;
-        for (int i = 0; i < 10; i++) {
+        Double amount = 1000D;
+        for (int i = 0; i < 1000; i++) {
             String account = String.valueOf(100001 + i);
             Callable<String> callableTask = generateCallableTask(account, amount);
             callableList.add(callableTask);

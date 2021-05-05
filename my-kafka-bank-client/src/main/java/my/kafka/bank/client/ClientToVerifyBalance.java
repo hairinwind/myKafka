@@ -1,5 +1,6 @@
 package my.kafka.bank.client;
 
+import my.kafka.bank.Constants;
 import my.kafka.bank.message.AccountBalance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +15,18 @@ public class ClientToVerifyBalance {
     public static final Logger logger = LoggerFactory.getLogger(ClientToVerifyBalance.class);
 
     public static void main(String[] args) {
+//        verify(101000);
+        verify(100002);
+    }
+
+    public static void verify(int maxAccountNumber) {
         List<AccountBalance> accountBalances = allAccountBalances();
         logger.info("total account number {}", accountBalances.size());
 
         accountBalances.stream()
 //                .filter(accountBalance -> accountBalance.getBalance() != 1000)
-//                .filter(accountBalance -> Integer.parseInt(accountBalance.getAccount())  < 100601)
+                .filter(accountBalance -> !Constants.EXTERNAL_ACCOUNT.equalsIgnoreCase(accountBalance.getAccount()))
+                .filter(accountBalance -> Integer.parseInt(accountBalance.getAccount())  <= maxAccountNumber)
                 .sorted(new Comparator<AccountBalance>() {
                     @Override
                     public int compare(AccountBalance ab1, AccountBalance ab2) {

@@ -23,7 +23,7 @@ public class ClientToSendConcurrentTransactions {
     private static final int testAccountNumber = 1000;
 
     public static void main(String[] args) throws InterruptedException {
-//        ClientToResetBalance.resetAllBalances(0D);
+//        ClientToResetBalance.resetAllBalances(100D);
 
         ExecutorService executorService = Executors.newFixedThreadPool(3);
 
@@ -73,6 +73,11 @@ public class ClientToSendConcurrentTransactions {
                 Callable<String> callableTask = generateCallableTask(host, fromAccount, toAccount, amount);
                 callableList.add(callableTask);
             }
+            final int index = i;
+            callableList.add(() -> {
+                System.out.println("..." + index);
+                return "";
+            });
         }
         return callableList;
     }
