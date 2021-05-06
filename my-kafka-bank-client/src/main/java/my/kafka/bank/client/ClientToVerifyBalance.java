@@ -16,7 +16,7 @@ public class ClientToVerifyBalance {
 
     public static void main(String[] args) {
 //        verify(101000);
-        verify(100002);
+        verify(100100);
     }
 
     public static void verify(int maxAccountNumber) {

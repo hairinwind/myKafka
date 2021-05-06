@@ -1,6 +1,5 @@
 package my.kafka.bank.client;
 
-import my.kafka.bank.message.AccountBalance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
@@ -14,13 +13,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static my.kafka.bank.client.AlphaBankRestClient.*;
+import static my.kafka.bank.client.AlphaBankRestClient.multipleProducerEnabled;
+import static my.kafka.bank.client.AlphaBankRestClient.producerHost1;
+import static my.kafka.bank.client.AlphaBankRestClient.producerHost2;
+import static my.kafka.bank.client.AlphaBankRestClient.producerHost3;
 
 public class ClientToSendConcurrentTransactions {
 
     public static final Logger logger = LoggerFactory.getLogger(ClientToSendConcurrentTransactions.class);
 
-    private static final int testAccountNumber = 1000;
+    private static final int testAccountNumber = 100;
 
     public static void main(String[] args) throws InterruptedException {
 //        ClientToResetBalance.resetAllBalances(100D);
@@ -38,25 +40,6 @@ public class ClientToSendConcurrentTransactions {
         logger.info("all messages were sent in {} seconds", stopWatch.getTotalTimeSeconds());
 
         //manually run "ClientToVerifyBalance" to verify the balance
-    }
-
-    private static void verify() {
-        //verify
-        List<AccountBalance> accountBalances = allAccountBalances();
-        logger.info("total account number {}", accountBalances.size());
-
-        accountBalances.stream()
-                .filter(accountBalance -> Integer.parseInt(accountBalance.getAccount())  <= 100000 + testAccountNumber)
-                .filter(accountBalance -> {
-                    int accountIndex = Integer.valueOf(accountBalance.getAccount()) - 100000;
-                    double credit = accountIndex - 1;
-                    double debit = testAccountNumber - accountIndex;
-                    double expectedBalance = credit - debit;
-                    return !accountBalance.getBalance().equals(expectedBalance);
-                })
-                .forEach(accountBalance -> logger.info("accountBalance is not expected, {}", accountBalance));
-
-        logger.info("verification is done");
     }
 
     private static List<Callable<String>> generateCallableTasks() {

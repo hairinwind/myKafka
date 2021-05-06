@@ -8,9 +8,11 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.slf4j.Logger;
@@ -64,7 +66,7 @@ public class MyKafkaStreamsConfiguration {
         KStream<String, BankTransaction> stream = streamsBuilder.stream(Topic.TRANSACTION_RAW,
                 Consumed.with(Serdes.String(), valueSerde));
 
-        stream.map(this::mapKeyByStatus)  //(k,v) -> KeyValue.pair(v.getFromAccount(), v)
+        KTable<String, Double> balanceKtable = stream.map(this::mapKeyByStatus)  //(k,v) -> KeyValue.pair(v.getFromAccount(), v)
                 .groupBy((account, bankTransaction) -> account, Grouped.with(Serdes.String(), valueSerde))
                 .aggregate(
                         () -> 0D, /* initializer */
@@ -72,6 +74,9 @@ public class MyKafkaStreamsConfiguration {
                         Materialized.<String, Double, KeyValueStore<Bytes, byte[]>>as(StateStore.BALANCE) /* state store name */
                                 .withValueSerde(Serdes.Double()) /* state store value serde */
                 );
+
+        Topology topology = streamsBuilder.build();
+        logger.info("topology: {}", topology.describe());
 
         return stream;
     }

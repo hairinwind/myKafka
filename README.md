@@ -1,6 +1,8 @@
 
-## my-kafka-my.kafka.bank.producer
+## my-kafka-prducer
+my.kafka.bank.producer
 this is the project to send a message to topic "test001"
+ref: https://docs.confluent.io/clients-kafka-java/current/overview.html
 
 ## my-kafka-consumer
 this is the project to consume messages from topic "test001"
@@ -55,7 +57,7 @@ Kafka processor API is low level API.
 Kafka DSL (stream language) is high level API.  
 https://kafka.apache.org/10/documentation/streams/developer-guide/processor-api.html  
 http://mkuthan.github.io/blog/2017/11/02/kafka-streams-dsl-vs-processor-api/  
-https://medium.com/@ceyhunuzngl/kafka-stream-processor-api-in-spring-boot-4e251067a58f#_=_  
+https://medium.com/@ceyhunuzngl/kafka-stream-processor-api-in-spring-boot-4e251067a58f#_=_   
 TODO...
 
 # Appendix
@@ -80,6 +82,10 @@ bin/kafka-streams-application-reset.sh --application-id alpha-bank --bootstrap-s
 
 ## reference
 https://www.confluent.io/blog/kafka-streams-tables-part-3-event-processing-fundamentals/  
+
+https://kafka-tutorials.confluent.io/create-stateful-aggregation-sum/kstreams.html#create-the-kafka-streams-topology
+
+Processor API and DSL: https://blog.csdn.net/programmerDingl/article/details/102134424
 
 spring-kafka default properties  
 https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#spring.kafka.admin.client-id  
