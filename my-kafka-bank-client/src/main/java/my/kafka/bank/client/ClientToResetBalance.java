@@ -25,6 +25,7 @@ public class ClientToResetBalance {
                 .filter(accountBalance -> !accountBalance.getBalance().equals(targetBalance))
                 .forEach(accountBalance -> resetBalance(accountBalance, targetBalance));
 
+        logger.info("fetch account balance after reset...");
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
