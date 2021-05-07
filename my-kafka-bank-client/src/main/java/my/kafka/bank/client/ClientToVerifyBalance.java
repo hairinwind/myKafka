@@ -16,7 +16,8 @@ public class ClientToVerifyBalance {
 
     public static void main(String[] args) {
 //        verify(101000);
-        verify(100100);
+//        verify(100100);
+        verify(100002);
     }
 
     public static void verify(int maxAccountNumber) {
@@ -24,9 +25,12 @@ public class ClientToVerifyBalance {
         logger.info("total account number {}", accountBalances.size());
 
         accountBalances.stream()
-//                .filter(accountBalance -> accountBalance.getBalance() != 1000)
                 .filter(accountBalance -> !Constants.EXTERNAL_ACCOUNT.equalsIgnoreCase(accountBalance.getAccount()))
                 .filter(accountBalance -> Integer.parseInt(accountBalance.getAccount())  <= maxAccountNumber)
+                .filter(accountBalance -> {
+                    int accountIndex = Integer.parseInt(accountBalance.getAccount()) - 100000;
+                    return accountBalance.getBalance().doubleValue() != accountIndex * 2 -1;
+                })
                 .sorted(new Comparator<AccountBalance>() {
                     @Override
                     public int compare(AccountBalance ab1, AccountBalance ab2) {
@@ -34,6 +38,7 @@ public class ClientToVerifyBalance {
                     }
                 })
                 .forEach(accountBalance -> logger.info(accountBalance.toString()));
+
 
         logger.info("verification is done");
     }

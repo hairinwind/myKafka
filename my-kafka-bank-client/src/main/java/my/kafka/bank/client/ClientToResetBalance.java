@@ -14,7 +14,7 @@ public class ClientToResetBalance {
 //    public static final
 
     public static void main(String[] args) {
-        Double targetBalance = 1000D;
+        Double targetBalance = 100D;
         resetAllBalances(targetBalance);
         logger.info("done!");
     }

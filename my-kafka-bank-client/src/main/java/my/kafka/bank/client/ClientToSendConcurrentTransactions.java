@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -13,10 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static my.kafka.bank.client.AlphaBankRestClient.multipleProducerEnabled;
-import static my.kafka.bank.client.AlphaBankRestClient.producerHost1;
-import static my.kafka.bank.client.AlphaBankRestClient.producerHost2;
-import static my.kafka.bank.client.AlphaBankRestClient.producerHost3;
+import static my.kafka.bank.client.AlphaBankRestClient.getHost;
 
 public class ClientToSendConcurrentTransactions {
 
@@ -27,7 +23,7 @@ public class ClientToSendConcurrentTransactions {
     public static void main(String[] args) throws InterruptedException {
 //        ClientToResetBalance.resetAllBalances(100D);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
 
         List<Callable<String>> callableTasks = generateCallableTasks();
 
@@ -63,15 +59,6 @@ public class ClientToSendConcurrentTransactions {
             });
         }
         return callableList;
-    }
-
-    private static String getHost(int j) {
-        if (multipleProducerEnabled) {
-            List<String> hosts = Arrays.asList(producerHost1, producerHost2, producerHost3);
-            return hosts.get(j % 3);
-        } else {
-            return producerHost1;
-        }
     }
 
     private static Callable<String> generateCallableTask(String host, String fromAccount, String toAccount, Double amount) {

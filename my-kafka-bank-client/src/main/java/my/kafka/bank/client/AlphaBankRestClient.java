@@ -12,6 +12,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AlphaBankRestClient {
@@ -62,5 +63,13 @@ public class AlphaBankRestClient {
         String endpoint = url + "/fetchAllLocalBalances";
         return restTemplate.exchange(endpoint, HttpMethod.GET, null, new ParameterizedTypeReference<List<AccountBalance>>(){})
                 .getBody();
+    }
+
+    public static String getHost(int index) {
+        if (multipleProducerEnabled) {
+            List<String> hosts = Arrays.asList(producerHost1, producerHost2, producerHost3);
+            return hosts.get(index % 3);
+        }
+        return producerHost1;
     }
 }

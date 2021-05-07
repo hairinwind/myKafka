@@ -47,7 +47,7 @@ public class ClientToTestLimitConcurrent {
         //initial 100010 balance to $10
         AlphaBankRestClient.moveMoney("external", "100001", 500D);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(9);
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
 
         List<Callable<String>> callableTasks = generateCallableTasks();
 

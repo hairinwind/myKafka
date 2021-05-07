@@ -128,7 +128,7 @@ public class MyKafkaStreamsConfiguration {
 
     //KafkaListener for retry
     @RetryableTopic(attempts = "2",
-            backoff = @Backoff(delay = 100, multiplier = 2, maxDelay = 5000))
+            backoff = @Backoff(delay = 100, multiplier = 2, maxDelay = 1000))
     @KafkaListener(topics = Topic.TRANSACTION_RAW_RETRY)
     public void consume(BankTransaction bankTransaction) {
         switch(bankTransaction.getStatus()) {
@@ -140,7 +140,7 @@ public class MyKafkaStreamsConfiguration {
                 break;
             default:  /* RETRY_BALANCE_NOT_ENOUGH */
                 bankTransaction.setRetriedTimes(bankTransaction.getRetriedTimes() + 1);
-                if (bankTransaction.getRetriedTimes() % 2 == 0) {
+                if (bankTransaction.getRetriedTimes() % 2 == 0 && bankTransaction.getRetriedTimes() < 20) {
                     /* retry time is even, send back to topic to retry */
                     logger.info("retry...{}", bankTransaction);
                     producer.sendBankTransaction(bankTransaction);

@@ -11,6 +11,10 @@ public class ClientToInitialAccount {
 
     public static final Logger logger = LoggerFactory.getLogger(ClientToInitialAccount.class);
 
+    private static final Double amount = 100D;
+    private static final int accountNumber = 100;
+
+
     public static void main(String[] args) throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(9);
 
@@ -23,9 +27,7 @@ public class ClientToInitialAccount {
     private static List<Callable<String>> generateCallableTasks() {
         List<Callable<String>> callableList = new ArrayList<>();
 
-//        List<String> hosts = Arrays.asList(host1, host2, host3);
-        Double amount = 1000D;
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < accountNumber; i++) {
             String account = String.valueOf(100001 + i);
             Callable<String> callableTask = generateCallableTask(account, amount);
             callableList.add(callableTask);

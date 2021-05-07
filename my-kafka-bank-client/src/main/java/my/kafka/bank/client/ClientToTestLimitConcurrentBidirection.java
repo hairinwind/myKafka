@@ -49,7 +49,7 @@ public class ClientToTestLimitConcurrentBidirection {
         logger.info("all messages were sent in {} seconds", stopWatch.getTotalTimeSeconds());
 
         //verify the balance
-        Thread.sleep(5000);
+        Thread.sleep(15000);
         ClientToVerifyBalance.verify(100002);
     }
 
