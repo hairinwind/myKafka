@@ -10,6 +10,8 @@ public class BankTransaction {
     private String toAccount;
     private Double amount;
     private Instant instant = Instant.now();
+    private BankTransactionStatus status = BankTransactionStatus.CREATED;
+    private int retriedTimes = 0;
 
     public BankTransaction() {
     }
@@ -52,14 +54,32 @@ public class BankTransaction {
         return instant;
     }
 
+    public BankTransactionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BankTransactionStatus status) {
+        this.status = status;
+    }
+
+    public int getRetriedTimes() {
+        return retriedTimes;
+    }
+
+    public void setRetriedTimes(int retriedTimes) {
+        this.retriedTimes = retriedTimes;
+    }
+
     @Override
     public String toString() {
         return "BankTransaction{" +
                 "txId='" + txId + '\'' +
+                ", status=" + status +
                 ", fromAccount='" + fromAccount + '\'' +
                 ", toAccount='" + toAccount + '\'' +
                 ", amount=" + amount +
                 ", instant=" + instant +
+                ", retiedTimes =" + retriedTimes +
                 '}';
     }
 }
