@@ -8,10 +8,13 @@ public class Topic {
     // this is the topic for bank transactions internal which is split from bank transactions
     public static final String TRANSACTION_INTERNAL = "alpha-bank-transactions-internal";
 
-    // the topic for retry messages
+    // this is the topic to retry bank transactions
     public static final String TRANSACTION_RAW_RETRY = "alpha-bank-transactions-raw-retry";
 
-    // the topic for completed messages
+    // this is the topic for completed transaction
     public static final String TRANSACTION_RAW_COMPLETED = "alpha-bank-transactions-raw-completed";
+
+    // this is the dead letter of TRANSACTION_RAW_RETRY
+    public static final String TRANSACTION_RAW_RETRY_DLT = "alpha-bank-transactions-raw-retry-dlt";
 
 }
