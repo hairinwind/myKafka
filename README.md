@@ -50,7 +50,9 @@ this solution works.
 ## exception handling
 
 ## unit test
-@EmbeddedKafka
+@EmbeddedKafka  
+https://docs.spring.io/spring-kafka/reference/html/#example  
+
 
 ## Kafka Processor API
 Kafka processor API is low level API.  
@@ -80,6 +82,9 @@ reset intermediate/auto-created topics
 bin/kafka-streams-application-reset.sh --application-id alpha-bank --bootstrap-servers 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092
 ```
 
+delete topic by regex
+```./bin/kafka-topics.sh --zookeeper 192.168.49.2:32181 --delete --topic 'alpha-bank-.*'```
+
 ## reference
 https://www.confluent.io/blog/kafka-streams-tables-part-3-event-processing-fundamentals/  
 
@@ -90,3 +95,5 @@ Processor API and DSL: https://blog.csdn.net/programmerDingl/article/details/102
 spring-kafka default properties  
 https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#spring.kafka.admin.client-id  
 
+## visualize topology
+https://zz85.github.io/kafka-streams-viz/
