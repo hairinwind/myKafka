@@ -5,8 +5,6 @@ import my.kafka.bank.message.AccountBalance;
 import my.kafka.bank.message.BankTransactionInternal;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -20,7 +18,6 @@ import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,16 +37,6 @@ public class Consumer {
 
     @Value("${server.host:localhost}")
     public String host;
-
-//    @KafkaListener(topics = Topic.TRANSACTION_RAW, groupId="monitor")
-//    public void consume(BankTransaction bankTransaction) {
-//        logger.info("bankTransaction created -> {}", bankTransaction);
-//    }
-//
-//    @KafkaListener(topics = Topic.TRANSACTION_INTERNAL, groupId="monitor")
-//    public void consume(BankTransactionInternal txInternal) {
-//        logger.info("txInternal created -> {}", txInternal);
-//    }
 
     public AccountBalance getBalance(String accountNumber) {
         final HostStoreInfo hostStoreInfo = streamsMetadataForStoreAndKey(StateStore.BALANCE, accountNumber, new StringSerializer());
@@ -108,22 +95,6 @@ public class Consumer {
                 StateStore.BALANCE,
                 QueryableStoreTypes.keyValueStore());
         return store;
-    }
-
-    @Autowired
-    StreamsBuilder streamsBuilder;
-
-    @Value("${spring.kafka.streams.properties.application.server}")
-    private String applicationServer;
-    @Value("${spring.kafka.streams.properties.state.dir}")
-    private String stateDir;
-
-    @PostConstruct
-    public void postConstruct() {
-        Topology topology = streamsBuilder.build();
-        logger.info("topology: {}", topology.describe());
-        logger.info("applicationServer {}", applicationServer);
-        logger.info("stateDir {}", stateDir);
     }
 
 }

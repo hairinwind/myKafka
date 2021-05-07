@@ -16,36 +16,12 @@ import java.util.List;
 @RestController
 public class MyKafkaBankApplication {
 
-//	@Autowired
-//	private Producer my.kafka.bank.producer;
-
 	@Autowired
 	private Consumer consumer;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MyKafkaBankApplication.class, args);
 	}
-
-//	@PostMapping("/testSend")
-//	public String testSend() {
-//		BankTransaction bankTransaction = new BankTransaction("100001", "100002", 1D);
-//		my.kafka.bank.producer.sendBankTransaction(bankTransaction);
-//		return "SUCCESS";
-//	}
-//
-//	@PostMapping("/testSendFromExternal")
-//	public String testSendFormExternal() {
-//		BankTransaction bankTransaction = new BankTransaction("external", "100002", 1D);
-//		my.kafka.bank.producer.sendBankTransaction(bankTransaction);
-//		return "SUCCESS";
-//	}
-
-//	@PostMapping("/send")
-//	public String send(@RequestParam String fromAccount, @RequestParam String toAccount, @RequestParam Double amount) {
-//		BankTransaction bankTransaction = new BankTransaction(fromAccount, toAccount, amount);
-//		my.kafka.bank.producer.sendBankTransaction(bankTransaction);
-//		return "SUCCESS";
-//	}
 
 	@GetMapping("/account/{accountNumber}")
 	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable String accountNumber) {
