@@ -17,4 +17,10 @@ public class Topic {
     // this is the dead letter of TRANSACTION_RAW_RETRY
     public static final String TRANSACTION_RAW_RETRY_DLT = "alpha-bank-transactions-raw-retry-dlt";
 
+    //topics for my-kafka-spring-stream
+    public static final String ORDER = "order";
+    public static final String CUSTOMER = "customer";
+    public static final String PRODUCT = "product";
+    public static final String ENRICHED_ORDER = "enriched-order";
+
 }

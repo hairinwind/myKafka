@@ -14,15 +14,13 @@ bin/kafka-topics --zookeeper localhost:2181 \
 ```
 
 ## GlobalKtable
-to test
-- start my-kafka-spring-stream 
-- start my-kafka-bank-monitor to consume the topics
-prepare the data
+to test, start my-kafka-spring-stream   
+### prepare the data
 ```
 curl -d 'customerId=1&name=ZhangSan' localhost:9000/customer
 curl -d 'productId=1&name=Asus_VivoBook' localhost:9000/product
 ``` 
-Send the order
+### Send the order
 ```
 curl -d 'productId=1&customerId=1&orderId=1&quantity=2' localhost:9000/order
 ```
