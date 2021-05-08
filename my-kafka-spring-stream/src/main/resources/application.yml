@@ -1,0 +1,20 @@
+server:
+  port: 9000
+
+spring:
+  kafka:
+    bootstrap-servers: 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092
+    streams:
+      application-id: my-test
+    consumer:
+      bootstrap-servers: 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092
+      group-id: testConsumer001
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
