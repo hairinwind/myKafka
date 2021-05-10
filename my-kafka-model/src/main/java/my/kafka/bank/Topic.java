@@ -18,9 +18,14 @@ public class Topic {
     public static final String TRANSACTION_RAW_RETRY_DLT = "alpha-bank-transactions-raw-retry-dlt";
 
     //topics for my-kafka-spring-stream
+    // GlobalKTable
     public static final String ORDER = "order";
     public static final String CUSTOMER = "customer";
     public static final String PRODUCT = "product";
     public static final String ENRICHED_ORDER = "enriched-order";
+    // PageViewRegionLambdaExample
+    public static final String PAGE_VIEWS = "PageViews";
+    public static final String USER_PROFILES = "UserProfiles";
+    public static final String PAGE_VIEWS_BY_REGION = "PageViewsByRegion";
 
 }

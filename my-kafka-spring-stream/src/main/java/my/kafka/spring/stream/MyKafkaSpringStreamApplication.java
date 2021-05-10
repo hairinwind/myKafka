@@ -3,7 +3,9 @@ package my.kafka.spring.stream;
 import my.kafka.spring.stream.consumer.Consumer;
 import my.kafka.spring.stream.message.Customer;
 import my.kafka.spring.stream.message.Order;
+import my.kafka.spring.stream.message.PageView;
 import my.kafka.spring.stream.message.Product;
+import my.kafka.spring.stream.message.UserProfile;
 import my.kafka.spring.stream.producer.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -59,6 +61,23 @@ public class MyKafkaSpringStreamApplication {
                 .quantity(quantity)
                 .build();
         this.producer.sendOrder(order);
+    }
+
+    @PostMapping(value = "/userProfile")
+    public void sendUserProfile(@RequestParam("userId") String userId,
+                            @RequestParam("region") String region) {
+        UserProfile userProfile = UserProfile.builder()
+                .userId(userId)
+                .region(region)
+                .build();
+        this.producer.sendUserProfile(userProfile);
+    }
+
+    @PostMapping(value = "/sendPageViewTestData")
+    public void sendPageViewTestData() {
+        producer.sendPageView(PageView.builder().page("index.html").userId("Jason").build());
+        producer.sendPageView(PageView.builder().page("index.html").userId("Chris").build());
+        producer.sendPageView(PageView.builder().page("index.html").userId("ZhangSan").build());
     }
 
     @GetMapping(value = "/customers")

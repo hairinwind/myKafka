@@ -3,7 +3,9 @@ package my.kafka.spring.stream.producer;
 import my.kafka.bank.Topic;
 import my.kafka.spring.stream.message.Customer;
 import my.kafka.spring.stream.message.Order;
+import my.kafka.spring.stream.message.PageView;
 import my.kafka.spring.stream.message.Product;
+import my.kafka.spring.stream.message.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +29,13 @@ public class Producer {
 
     public void sendProduct(Product product) {
         this.kafkaTemplate.send(Topic.PRODUCT, product.getProductId(), product);
+    }
+
+    public void sendUserProfile(UserProfile userProfile) {
+        this.kafkaTemplate.send(Topic.USER_PROFILES, userProfile.getUserId(), userProfile);
+    }
+
+    public void sendPageView(PageView pageView) {
+        this.kafkaTemplate.send(Topic.PAGE_VIEWS, pageView);
     }
 }

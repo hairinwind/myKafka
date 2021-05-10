@@ -6,6 +6,10 @@ import my.kafka.spring.stream.message.Customer;
 import my.kafka.spring.stream.message.EnrichedOrder;
 import my.kafka.spring.stream.message.Order;
 import my.kafka.spring.stream.message.Product;
+import my.kafka.spring.stream.message.UserProfile;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -16,6 +20,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +30,17 @@ public class Consumer {
 
     @Autowired
     StreamsBuilderFactoryBean defaultKafkaStreamsBuilder;
+
+    @Autowired
+    StreamsBuilder streamsBuilder;
+
+    @PostConstruct
+    public void postConstruct() {
+        //print topology
+        Topology topology = streamsBuilder.build();
+        logger.info("topology: {}", topology.describe());
+    }
+
 
     public List<Customer> fetchAllCustomers() {
         List<Customer> result = new ArrayList<>();
@@ -58,7 +74,7 @@ public class Consumer {
         return store;
     }
 
-    // consume
+    // consume topics for GLobalTablesExample
     @KafkaListener(topics = Topic.ORDER, groupId="monitor")
     public void consumeOrder(Order order) {
         logger.info("order -> {}", order);
@@ -79,4 +95,15 @@ public class Consumer {
         logger.info("enrichedOrder -> {}", enrichedOrder);
     }
 
+    // consume topics for PageViewRegionLambdaExample
+    @KafkaListener(topics = Topic.USER_PROFILES, groupId="monitor")
+    public void consumeUserProfile(UserProfile userProfile) {
+        logger.info("UserProfile -> {}", userProfile);
+    }
+
+    @KafkaListener(topics = Topic.PAGE_VIEWS_BY_REGION, groupId = "monitor",
+            containerFactory = "stringLongContainerFactory")
+    public void consumePageViewsByRegion(ConsumerRecord<String, Long> record) {
+        logger.info("pageViewsByRegion -> {} : {}", record.key(), record.value());
+    }
 }

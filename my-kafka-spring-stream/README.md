@@ -2,6 +2,7 @@
 this is practising the sample code from https://github.com/confluentinc/kafka-streams-examples
 
 ## Topics 
+Topics for GlobalKTablesExample
 ```
 bin/kafka-topics --zookeeper localhost:2181 \
     --create --topic order --partitions 3 --replication-factor 1
@@ -11,6 +12,15 @@ bin/kafka-topics --zookeeper localhost:2181 \
     --create --topic product --partitions 2 --replication-factor 1
 bin/kafka-topics --zookeeper localhost:2181 \
     --create --topic enriched-order --partitions 3 --replication-factor 1
+```
+topics for PageViewRegionLambdaExample
+```
+bin/kafka-topics --zookeeper localhost:2181 \
+     --create --topic PageViews --partitions 1 --replication-factor 1
+bin/kafka-topics --zookeeper localhost:2181 \
+     --create --topic UserProfiles --partitions 1 --replication-factor 1
+bin/kafka-topics --zookeeper localhost:2181 \
+     --create --topic PageViewsByRegion --partitions 1 --replication-factor 1
 ```
 
 ## GlobalKtable
@@ -30,5 +40,15 @@ EnrichedOrder(product=Product(productId=1, name=Asus_VivoBook), customer=Custome
 ```
 If send the customer with same customerId again, the second one overwrites the first one in state store. 
 
-
+##
+### prepare the data
+```
+curl -d "userId=Jason&region=Asia" localhost:9000/userProfile
+curl -d "userId=ZhangSan&region=Asia" localhost:9000/userProfile
+curl -d "userId=Chris&region=NorthAmerica" localhost:9000/userProfile
+```
+### send the PageView Data
+```
+curl -X POST localhost:9000/sendPageViewTestData
+```
 

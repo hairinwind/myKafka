@@ -10,7 +10,6 @@ import my.kafka.spring.stream.message.Product;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
@@ -24,6 +23,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
+/**
+ * This is to join order with customer (globalKTable) and product (globalKTable)
+ * It can also be implemented by globalStore
+ * https://github.com/confluentinc/kafka-streams-examples/blob/6.1.1-post/src/main/java/io/confluent/examples/streams/GlobalStoresExample.java#L169
+ * GlobalStore need implement GlobalStoreUpdater
+ * https://github.com/confluentinc/kafka-streams-examples/blob/6.1.1-post/src/main/java/io/confluent/examples/streams/GlobalStoresExample.java#L220
+ * It seems that globalTable is better...
+ */
 @Configuration(proxyBeanMethods = false)
 @EnableKafkaStreams
 public class GlobalKTablesExample {
@@ -31,7 +38,7 @@ public class GlobalKTablesExample {
     public static final Logger logger = LoggerFactory.getLogger(GlobalKTablesExample.class);
 
     @Bean
-    public KStream<String, EnrichedOrder> alphaBankKStream(StreamsBuilder streamsBuilder) {
+    public KStream<String, EnrichedOrder> globalKTablesStream(StreamsBuilder streamsBuilder) {
         JsonSerde<Order> orderSerde = new JsonSerde<>(Order.class);
         KStream<String, Order> ordersStream = streamsBuilder.stream(Topic.ORDER,
                 Consumed.with(Serdes.String(), orderSerde));
@@ -63,9 +70,6 @@ public class GlobalKTablesExample {
 
         JsonSerde<EnrichedOrder> enrichedOrdersSerde = new JsonSerde<>(EnrichedOrder.class);
         enrichedOrdersStream.to(Topic.ENRICHED_ORDER, Produced.with(Serdes.String(), enrichedOrdersSerde));
-
-        Topology topology = streamsBuilder.build();
-        logger.info("topology: {}", topology.describe());
 
         return enrichedOrdersStream;
     }
