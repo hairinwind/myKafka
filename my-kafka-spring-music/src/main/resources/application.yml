@@ -1,0 +1,20 @@
+server:
+  port: 9000
+
+spring:
+  kafka:
+    bootstrap-servers: 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092
+    streams:
+      application-id: my-music
+    consumer:
+      bootstrap-servers: 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092
+      group-id: my-music-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
