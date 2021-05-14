@@ -1,8 +1,8 @@
 package my.kafka.spring.music.producer;
 
-import my.kafka.spring.music.Topic;
 import my.kafka.spring.music.data.PlayEvent;
 import my.kafka.spring.music.data.Song;
+import my.kafka.spring.music.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

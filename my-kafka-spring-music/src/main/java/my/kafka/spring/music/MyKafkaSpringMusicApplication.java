@@ -1,10 +1,10 @@
 package my.kafka.spring.music;
 
-import my.kafka.spring.music.consumer.Consumer;
 import my.kafka.spring.music.data.PlayEvent;
 import my.kafka.spring.music.data.Song;
 import my.kafka.spring.music.data.TopFiveSongs;
 import my.kafka.spring.music.producer.Producer;
+import my.kafka.spring.music.consumer.Consumer;
 import my.kafka.spring.music.producer.SongSource;
 import org.apache.kafka.streams.KeyValue;
 import org.springframework.beans.factory.annotation.Autowired;
