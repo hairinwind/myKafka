@@ -104,6 +104,9 @@ public class KafkaConsumerConfig {
                  * the SongPlayCount is {Song(id=19, album=24K Magic, artist=Bruno Mars, name=That's What I Like, genre=Pop) : 2}
                  * That would be added into aggregate by first aggregator
                  * and the previous result {Song(id=19, album=24K Magic, artist=Bruno Mars, name=That's What I Like, genre=Pop) : 1} is removed by second aggregator
+                 *
+                 * the second aggregator is only invoked when there is old item (same key) existing
+                 * the second aggregator is invoked before the first aggregator
                  */
                 .aggregate(TopFiveSongs::new,
                         (aggKey, value, aggregate) -> {

@@ -10,5 +10,28 @@ bin/kafka-topics --zookeeper localhost:2181 \
     --create --topic song-feed --partitions 4 --replication-factor 1
 ```
 
+## To Test
+initial songs
+```
+curl -X POST localhost:9000/initialSongs
+```
+send play event, change songId and sent it multiple times
+```
+curl -d "songId=1&duration=40000" localhost:9000/playEvent
+```
+check the log to see how the data flows
+
+read TOP_FIVE_SONGS_BY_GENRE_STORE
+```
+curl localhost:9000/top5ByGenre
+```
+read TOP_FIVE_SONGS_STORE
+```
+curl localhost:9000/top5 | jq
+```
+read SONG_PLAY_COUNT_STORE
+```
+curl localhost:9000/songPlayCount | jq
+```
 
 
