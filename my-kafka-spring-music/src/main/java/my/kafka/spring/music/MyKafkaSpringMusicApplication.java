@@ -9,9 +9,15 @@ import my.kafka.spring.music.data.TopFiveSongs;
 import my.kafka.spring.music.producer.Producer;
 import my.kafka.spring.music.producer.SongSource;
 import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.Topology;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +29,8 @@ import java.util.List;
 @RestController
 public class MyKafkaSpringMusicApplication {
 
+    public static final Logger logger = LoggerFactory.getLogger(MyKafkaSpringMusicApplication.class);
+
     @Autowired
     private Consumer consumer;
 
@@ -33,15 +41,12 @@ public class MyKafkaSpringMusicApplication {
         SpringApplication.run(MyKafkaSpringMusicApplication.class, args);
     }
 
-//    @PostMapping(value = "/customer")
-//    public void sendMessageToKafkaTopic(@RequestParam("customerId") String customerId,
-//                                        @RequestParam("name") String customerName) {
-//        Customer customer = Customer.builder()
-//                .customerId(customerId)
-//                .name(customerName)
-//                .build();
-//        this.producer.sendCustomer(customer);
-//    }
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        StreamsBuilder streamsBuilder = event.getApplicationContext().getBean(StreamsBuilder.class);
+        Topology topology = streamsBuilder.build();
+        logger.info("topology: {}", topology.describe());
+    }
 
     @PostMapping(value = "/initialSongs")
     public void initialSongs() {
@@ -72,6 +77,11 @@ public class MyKafkaSpringMusicApplication {
     @GetMapping("/myTopFiveSongsByGenre")
     public List<MyTopFiveSongs<SongPlayCount>> getMyTop5ByGenre() {
         return consumer.readMyTopFiveSongsByGenre();
+    }
+
+    @GetMapping("/allSongs")
+    public List<Song> getAllSongs() {
+        return consumer.readAllSongs();
     }
 
 }

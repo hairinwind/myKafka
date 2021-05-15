@@ -8,8 +8,6 @@ import my.kafka.spring.music.data.Song;
 import my.kafka.spring.music.data.SongPlayCount;
 import my.kafka.spring.music.data.TopFiveSongs;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.slf4j.Logger;
@@ -19,7 +17,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,16 +26,6 @@ public class Consumer {
 
     @Autowired
     StreamsBuilderFactoryBean defaultKafkaStreamsBuilder;
-
-    @Autowired
-    StreamsBuilder streamsBuilder;
-
-    @PostConstruct
-    public void postConstruct() {
-        //print topology
-        Topology topology = streamsBuilder.build();
-        logger.info("topology: {}", topology.describe());
-    }
 
     @KafkaListener(topics = Topic.SONG_FEED)
     public void consumeSongs(Song song) {
@@ -84,5 +71,14 @@ public class Consumer {
                 QueryableStoreTypes.keyValueStore());
         store.all().forEachRemaining(record -> topFiveSongs.add(record.value));
         return topFiveSongs;
+    }
+
+    public List<Song> readAllSongs() {
+        List<Song> result = new ArrayList<>();
+        ReadOnlyKeyValueStore<Long, Song> store = defaultKafkaStreamsBuilder.getKafkaStreams().store(
+                StateStore.ALL_SONGS,
+                QueryableStoreTypes.keyValueStore());
+        store.all().forEachRemaining(record -> result.add(record.value));
+        return result;
     }
 }

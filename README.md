@@ -81,6 +81,12 @@ reset intermediate/auto-created topics
 ``` 
 bin/kafka-streams-application-reset.sh --application-id alpha-bank --bootstrap-servers 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092
 ```
+Or
+```
+bin/kafka-streams-application-reset.sh --bootstrap-servers 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092 \
+    --application-id my-music \
+    --input-topics play-events,song-feed
+```
 
 delete topic by regex
 ```./bin/kafka-topics.sh --zookeeper 192.168.49.2:32181 --delete --topic 'alpha-bank-.*'```
