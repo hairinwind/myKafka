@@ -12,7 +12,6 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.Joined;
@@ -158,7 +157,7 @@ public class KafkaConsumerConfig {
     // Make MyTopFiveSongs support generic, MyTopFiveSongs<SongPlayCount>
     // then I can use JsonSerde and it does not depend TopFiveSerde
     @Bean
-    public KTable<String, MyTopFiveSongs<SongPlayCount>> myGroupByGenreTop5(KTable<Song, Long> songPlayCounts, StreamsBuilder builder) {
+    public KTable<String, MyTopFiveSongs<SongPlayCount>> myGroupByGenreTop5(KTable<Song, Long> songPlayCounts) {
         Serde<SongPlayCount> songPlayCountSerde = new JsonSerde<>(SongPlayCount.class);
         Serde<MyTopFiveSongs<SongPlayCount>> myTopFiveSerde = new JsonSerde<>(new TypeReference<MyTopFiveSongs<SongPlayCount>>(){} );
 
@@ -181,9 +180,6 @@ public class KafkaConsumerConfig {
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(myTopFiveSerde)
                 );
-
-        Topology topology = builder.build();
-        logger.info("...topology: {}", topology.describe());
 
         return groupByGenre;
     }
