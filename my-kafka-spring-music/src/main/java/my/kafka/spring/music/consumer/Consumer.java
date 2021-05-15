@@ -2,8 +2,10 @@ package my.kafka.spring.music.consumer;
 
 import my.kafka.spring.music.StateStore;
 import my.kafka.spring.music.Topic;
+import my.kafka.spring.music.data.MyTopFiveSongs;
 import my.kafka.spring.music.data.PlayEvent;
 import my.kafka.spring.music.data.Song;
+import my.kafka.spring.music.data.SongPlayCount;
 import my.kafka.spring.music.data.TopFiveSongs;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -75,68 +77,12 @@ public class Consumer {
         return result;
     }
 
-//    public List<Customer> fetchAllCustomers() {
-//        List<Customer> result = new ArrayList<>();
-//        KeyValueIterator<String, Customer> all = customerStore().all();
-//        all.forEachRemaining(record -> {
-//            result.add(record.value);
-//        });
-//        return result;
-//    }
-//
-//    protected ReadOnlyKeyValueStore<String, Customer> customerStore() {
-//        ReadOnlyKeyValueStore<String, Customer> store = defaultKafkaStreamsBuilder.getKafkaStreams().store(
-//                StateStore.CUSTOMER_STORE,
-//                QueryableStoreTypes.keyValueStore());
-//        return store;
-//    }
-//
-//    public List<Product> fetchAllProdcuts() {
-//        List<Product> result = new ArrayList<>();
-//        KeyValueIterator<String, Product> all = productStore().all();
-//        all.forEachRemaining(record -> {
-//            result.add(record.value);
-//        });
-//        return result;
-//    }
-//
-//    protected ReadOnlyKeyValueStore<String, Product> productStore() {
-//        ReadOnlyKeyValueStore<String, Product> store = defaultKafkaStreamsBuilder.getKafkaStreams().store(
-//                StateStore.PRODUCT_STORE,
-//                QueryableStoreTypes.keyValueStore());
-//        return store;
-//    }
-//
-//    // consume topics for GLobalTablesExample
-//    @KafkaListener(topics = Topic.ORDER, groupId="monitor")
-//    public void consumeOrder(Order order) {
-//        logger.info("order -> {}", order);
-//    }
-//
-//    @KafkaListener(topics = Topic.CUSTOMER, groupId="monitor")
-//    public void consumeCustomer(Customer customer) {
-//        logger.info("customer -> {}", customer);
-//    }
-//
-//    @KafkaListener(topics = Topic.PRODUCT, groupId="monitor")
-//    public void consumeProduct(Product product) {
-//        logger.info("product -> {}", product);
-//    }
-//
-//    @KafkaListener(topics = Topic.ENRICHED_ORDER, groupId="monitor")
-//    public void consumeEnrichedOrder(EnrichedOrder enrichedOrder) {
-//        logger.info("enrichedOrder -> {}", enrichedOrder);
-//    }
-//
-//    // consume topics for PageViewRegionLambdaExample
-//    @KafkaListener(topics = Topic.USER_PROFILES, groupId="monitor")
-//    public void consumeUserProfile(UserProfile userProfile) {
-//        logger.info("UserProfile -> {}", userProfile);
-//    }
-//
-//    @KafkaListener(topics = Topic.PAGE_VIEWS_BY_REGION, groupId = "monitor",
-//            containerFactory = "stringLongContainerFactory")
-//    public void consumePageViewsByRegion(ConsumerRecord<String, Long> record) {
-//        logger.info("pageViewsByRegion -> {} : {}", record.key(), record.value());
-//    }
+    public List<MyTopFiveSongs<SongPlayCount>> readMyTopFiveSongsByGenre() {
+        List<MyTopFiveSongs<SongPlayCount>> topFiveSongs = new ArrayList<>();
+        ReadOnlyKeyValueStore<String, MyTopFiveSongs<SongPlayCount>> store = defaultKafkaStreamsBuilder.getKafkaStreams().store(
+                StateStore.MY_TOP_FIVE_SONGS_BY_GENRE_STORE,
+                QueryableStoreTypes.keyValueStore());
+        store.all().forEachRemaining(record -> topFiveSongs.add(record.value));
+        return topFiveSongs;
+    }
 }

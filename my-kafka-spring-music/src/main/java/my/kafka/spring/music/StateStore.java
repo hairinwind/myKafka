@@ -7,5 +7,7 @@ public class StateStore {
 
     public static final String TOP_FIVE_SONGS_BY_GENRE_STORE = "top-five-songs-by-genre";
 
+    public static final String MY_TOP_FIVE_SONGS_BY_GENRE_STORE = "my-top-five-songs-by-genre";
+
     public static final String TOP_FIVE_SONGS_STORE = "top-five-songs";
 }

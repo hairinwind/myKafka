@@ -9,9 +9,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SongPlayCount {
+public class SongPlayCount implements Comparable<SongPlayCount> {
 
     private Long songId;
     private long plays;
 
+    @Override
+    public int compareTo(SongPlayCount another) {
+        if (another == null) {
+            return -1;
+        }
+        return Long.compare(plays, another.getPlays());
+    }
 }

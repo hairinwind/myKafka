@@ -1,5 +1,7 @@
 package my.kafka.spring.music.consumer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import my.kafka.spring.music.data.MyTopFiveSongs;
 import my.kafka.spring.music.data.PlayEvent;
 import my.kafka.spring.music.data.Song;
 import my.kafka.spring.music.data.SongPlayCount;
@@ -28,6 +30,7 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 import static my.kafka.spring.music.Constants.MIN_CHARTABLE_DURATION;
 import static my.kafka.spring.music.Constants.TOP_FIVE_KEY;
 import static my.kafka.spring.music.StateStore.ALL_SONGS;
+import static my.kafka.spring.music.StateStore.MY_TOP_FIVE_SONGS_BY_GENRE_STORE;
 import static my.kafka.spring.music.StateStore.SONG_PLAY_COUNT_STORE;
 import static my.kafka.spring.music.StateStore.TOP_FIVE_SONGS_BY_GENRE_STORE;
 import static my.kafka.spring.music.StateStore.TOP_FIVE_SONGS_STORE;
@@ -148,6 +151,36 @@ public class KafkaConsumerConfig {
                 );
 
         return groupByAll;
+    }
+
+    // my implementation of groupByGenre
+    // Make MyTopFiveSongs support generic, MyTopFiveSongs<SongPlayCount>
+    // then I can use JsonSerde and it does not depend TopFiveSerde
+    @Bean
+    public KTable<String, MyTopFiveSongs<SongPlayCount>> myGroupByGenreTop5(KTable<Song, Long> songPlayCounts) {
+        Serde<SongPlayCount> songPlayCountSerde = new JsonSerde<>(SongPlayCount.class);
+        Serde<MyTopFiveSongs<SongPlayCount>> myTopFiveSerde = new JsonSerde<>(new TypeReference<MyTopFiveSongs<SongPlayCount>>(){} );
+
+        KTable<String, MyTopFiveSongs<SongPlayCount>> groupByGenre = songPlayCounts.groupBy(
+                (song, plays) -> KeyValue.pair(song.getGenre().toLowerCase(),
+                        new SongPlayCount(song.getId(), plays)),
+                Grouped.with(Serdes.String(), songPlayCountSerde))
+                .aggregate(() -> new MyTopFiveSongs<SongPlayCount>(),
+                        (aggKey, value, aggregate) -> {
+                            logger.info("...myTopFive adder {} {} {}", aggKey, value, aggregate);
+                            aggregate.add(value);
+                            return aggregate;
+                        },
+                        (aggKey, value, aggregate) -> {
+                            logger.info("...myTopFive subtractor {} {} {}", aggKey, value, aggregate);
+                            aggregate.remove(value);
+                            return aggregate;
+                        },
+                        Materialized.<String, MyTopFiveSongs<SongPlayCount>, KeyValueStore<Bytes, byte[]>>as(MY_TOP_FIVE_SONGS_BY_GENRE_STORE)
+                                .withKeySerde(Serdes.String())
+                                .withValueSerde(myTopFiveSerde)
+                );
+        return groupByGenre;
     }
 
 }
