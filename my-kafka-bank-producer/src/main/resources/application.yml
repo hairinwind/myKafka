@@ -1,0 +1,23 @@
+#server:
+#  port: 9999
+
+spring:
+  kafka:
+    bootstrap-servers: 192.168.49.2:31090,192.168.49.2:31091,192.168.49.2:31092 # common for consumer/my.kafka.bank.producer/streams
+#    streams:
+#      application-id: alpha-bank
+#      properties:
+#        application.server: ${server.host}:${server.port}
+#        state.dir: /home/yao/myworkspace/kafka-data/alpha-bank/${instance.index}
+#    consumer:
+#      group-id: bank_test
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#      properties:
+#        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+

@@ -1,0 +1,5 @@
+instance.index: 1
+
+server:
+  host: localhost
+  port: 9001

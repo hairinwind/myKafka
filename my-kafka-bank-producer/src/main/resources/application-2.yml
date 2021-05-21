@@ -1,0 +1,5 @@
+instance.index: 2
+
+server:
+  host: localhost
+  port: 9002
